@@ -30,13 +30,11 @@
 
 
     <body>
-    	 <div id="sirgas-map"></div>
+        <div id="map-container">
+    	   <div id="sirgas-map"></div>
+        </div>
          
         <!-- sp-map js -->
         <script src="javascript/sp-map.js"></script>
-
-        <form action="testestations.php" method="POST">
-            <input type="submit">
-        </form>
     </body>
 </html>
