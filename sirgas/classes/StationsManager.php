@@ -5,8 +5,20 @@
 
 
 class StationsManager {
-	
 	private static $instance;
+	private $stations;
+
+
+
+
+	public function getStations(){
+		if(!isset($stations)){
+			$stations = $this->loadDefault();
+		}
+
+		return $stations;
+	}
+
 
 
 
@@ -23,8 +35,10 @@ class StationsManager {
 		$station['status'] = true;
 		$stations[]  = $station;
 
+		// file_put_contents("/home/rafaelssantos/teste/json", json_encode($station));
 		return $stations;
 	}
+
 
 
 
@@ -33,15 +47,18 @@ class StationsManager {
 
 
 
-	public function updateStatus($stations, $statusFilePath) {
 
+	public function updateStatus($statusFilePath) {
 	}
+
 
 
     private function __construct() {
         
     }
  
+
+
     public static function getInstance() {
         if (is_null(static::$instance)) {
             static::$instance = new StationsManager();            

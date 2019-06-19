@@ -30,9 +30,7 @@
 
 
     <body>
-        <div id="map-container">
-    	   <div id="sirgas-map"></div>
-        </div>
+    	<div id="sirgas-map"></div>
          
         <!-- sp-map js -->
         <script src="javascript/sp-map.js"></script>
