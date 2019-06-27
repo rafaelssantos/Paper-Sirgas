@@ -21,7 +21,6 @@
         <script src="javascript/jquery/jquery-3.4.1.min.js"></script>
 
         <!-- leaflet js -->
-        <!--        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="crossorigin=""></script> -->
         <script src="javascript/lib/leaflet.js"></script>
     </head>
     
@@ -30,7 +29,48 @@
 
 
     <body>
+        <img class='logo-unesp' src="images/unesp.jpg">
     	<div id="sirgas-map"></div>
+        <div class='spacer'></div>
+
+        <div class='side-panel'>
+            <h1>Indicadores de Integridade</h1>
+            <div class='station-panel'>
+                <h2>PPTE</h2>
+                X = 3687624,367m <span>σ = 0,23m</span> <br>
+                Y = -4620818,682m <span>σ = 0,21m</span> <br>
+                Z = -2386880,380m <span>σ = 0,15m</span> <br>
+                Status: OK <br>
+            </div>
+            <div class='station-panel'>
+                <h2>ROSA</h2>
+                X = 3551520,485m <span>σ = 0,26m</span> <br>
+                Y = -4704836,112m <span>σ = 0,6m</span> <br>
+                Z = -2428155,731m <span>σ = 0,13m</span> <br>
+                Status: <em>WARNING</em> <br>
+            </div>
+            <div class='station-panel'>
+                <h2>SPAR</h2>
+                X = 3789545,410m <span>σ = 0,30m</span> <br>
+                Y = -4587255,757m <span>σ = 0,12m</span> <br>
+                Z = -2290619,365m <span>σ = 0,23m</span> <br>
+                Status: OK <br>
+            </div>
+            <div class='station-panel'>
+                <h2>SPDR</h2>
+                X = 3692649,658m <span>σ = 0,16m</span> <br>
+                Y = -4651331,119m <span>σ = 0,13m</span> <br>
+                Z = -2319169,961m <span>σ = 0,12m</span> <br>
+                Status: <em>WARNING</em> <br>
+            </div>
+            <div class='station-panel'>
+                <h2>SPTU</h2>
+                X = 3766123,314m <span>σ = 0,24m</span> <br>
+                Y = -4567433,465m <span>σ = 0,07m</span> <br>
+                Z = -2367323,834m <span>σ = 0,05m</span> <br>
+                Status: OK <br>
+            </div>
+        </div>
          
         <!-- sp-map js -->
         <script src="javascript/sp-map.js"></script>
