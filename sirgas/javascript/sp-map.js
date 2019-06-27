@@ -11,14 +11,29 @@ function updateMap(map){
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' + '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             id: 'mapbox.streets'
         }).addTo(map);
+
+        L.control.scale().addTo(map);
     }
 
     var layer = L.layerGroup();
     layer.addTo(map);
 
     var CustomIcon = L.Icon.extend({});
-    var suitableStIcon = new CustomIcon({iconUrl: 'images/marker-suitable.png'});
-    var notSuitableStIcon = new CustomIcon({iconUrl: 'images/marker-not-suitable.png'});
+    // var suitableStIcon = new CustomIcon({iconUrl: 'images/marker-suitable.png'});
+    // var notSuitableStIcon = new CustomIcon({iconUrl: 'images/marker-not-suitable.png'});
+
+    var suitableStIcon= new L.icon({
+        iconUrl: 'images/marker-suitable.png',
+        iconAnchor: [10, 41]
+        // popupAnchor: [0, -41]
+    });
+
+
+    var notSuitableStIcon= new L.icon({
+        iconUrl: 'images/marker-not-suitable.png',
+        iconAnchor: [10, 41]
+        // popupAnchor: [0, -41]
+    });
 
 
 
@@ -35,7 +50,12 @@ function updateMap(map){
 
             // Listando cada cliente encontrado na lista...
             $.each(stations, function(i, station){
-                L.marker([station.lat, station.long], {icon: suitableStIcon}).bindPopup(station.name).addTo(layer);
+                if(station.status === true){
+                    L.marker([station.lat, station.long], {icon: suitableStIcon}).bindPopup(station.name).addTo(layer);
+                }
+                else{
+                    L.marker([station.lat, station.long], {icon: notSuitableStIcon}).bindPopup(station.name).addTo(layer);
+                }
             });
             console.log("OK");
 

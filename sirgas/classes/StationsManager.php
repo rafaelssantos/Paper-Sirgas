@@ -29,6 +29,24 @@ class StationsManager {
 		$station['status'] = true;
 		$stations[]  = $station;
 
+		$station['lat'] = -22.523304;
+		$station['long'] = -52.952088;
+		$station['name'] = "ROSA";
+		$station['status'] = false;
+		$stations[]  = $station;
+
+		$station['lat'] = -21.184666;
+		$station['long'] = -50.439788;
+		$station['name'] = "SPAR";
+		$station['status'] = true;
+		$stations[]  = $station;
+
+		$station['lat'] = -21.461604;
+		$station['long'] = -51.554257;
+		$station['name'] = "SPDR";
+		$station['status'] = false;
+		$stations[]  = $station;
+
 		$station['lat'] = -21.929118;
 		$station['long'] = -50.49237;
 		$station['name'] = "SPTU";
