@@ -32,7 +32,8 @@ Point* PointManager::loadPoint(string filePath) const {
 
 	if (file.is_open()) {
 		string label;
-		float x, y, z;
+		double x, y, z;
+		double velocX, velocY, velocZ;
 		int year, month, day;
 
 		std::getline(file, label);
@@ -44,11 +45,15 @@ Point* PointManager::loadPoint(string filePath) const {
 		file >> month;
 		file >> day;
 
+		file >> velocX;
+		file >> velocY;
+		file >> velocZ;
+
 		point = new Point(x, y, z, label);
 
-
-		//		point->setTime(year, month, day);
-
+		point->dateTime()->setYear(year);
+		point->dateTime()->setMonth(month);
+		point->dateTime()->setDay(day);
 
 		file.close();
 	}
@@ -60,10 +65,13 @@ Point* PointManager::loadPoint(string filePath) const {
 
 
 
-Point* PointManager::buildPoint(float x, float y, float z, string label, int year, int month, int day) const {
+Point* PointManager::buildPoint(double x, double y, double z, std::string label, int year, int month, int day) const {
 	Point* point = new Point(x, y, z, label);
 
-	point->setTime(year, month, day);
+
+	point->dateTime()->setYear(year);
+	point->dateTime()->setMonth(month);
+	point->dateTime()->setDay(day);
 
 	return point;
 }
@@ -72,12 +80,22 @@ Point* PointManager::buildPoint(float x, float y, float z, string label, int yea
 
 
 
-void PointManager::updateCoordByEpoch(const Point& referencePoint, float velX, float velY, float velZ, Point* point) const {
-	double deltaSeconds;
+double PointManager::calcDeltaEpoch(const Point& aprioriPoint, const Point& point) const {
+	long deltaSeconds = difftime(mktime(aprioriPoint.dateTime()->tm()), mktime(point.dateTime()->tm()));
 
-	deltaSeconds = difftime(mktime(referencePoint.getTime()), mktime(point->getTime()));
+	return (deltaSeconds / 86400.0) / 365.0;
+}
 
-	std::cout << "[Teste] Remover: " << deltaSeconds << "\n";
+
+
+
+
+void PointManager::updateEpoch(const Point& aprioriPoint, Point* point) const {
+	double delta = calcDeltaEpoch(aprioriPoint, *point);
+
+	point->setX(point->x() + delta * aprioriPoint.velocX());
+	point->setX(point->y() + delta * aprioriPoint.velocY());
+	point->setX(point->z() + delta * aprioriPoint.velocZ());
 }
 
 

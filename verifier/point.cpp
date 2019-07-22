@@ -11,21 +11,19 @@ using namespace std;
 
 
 Point::Point() {
-	m_x = m_y = m_z = 0.0f;    // Coordenada 0, 0, 0
-	m_label = nullptr;         // Sem rótulo
-
-	time_t rawTime;
-
-	time(&rawTime);
-
-	m_time = gmtime(&rawTime);    // Hora e minuto atual
+	m_x = m_y = m_z = 0.0f;
+	m_label = "";
+	m_datetime = new DateTime();
+	m_velocX = 0;
+	m_velocY = 0;
+	m_velocZ = 0;
 }
 
 
 
 
 
-Point::Point(float x, float y, float z) {
+Point::Point(double x, double y, double z) : Point() {
 	m_x = x;
 	m_y = y;
 	m_z = z;
@@ -34,30 +32,28 @@ Point::Point(float x, float y, float z) {
 
 
 
-Point::Point(float x, float y, float z, string label) {
-	m_x = x;
-	m_y = y;
-	m_z = z;
+Point::Point(double x, double y, double z, string label) : Point(x, y, z) {
 	m_label = label;
 }
 
 
 
 Point::~Point() {
-	delete m_time;
+	delete m_datetime;
+	m_datetime = nullptr;
 }
 
 
 
 
-void Point::setX(float x) {
+void Point::setX(double x) {
 	m_x = x;
 }
 
 
 
 
-float Point::getX() const {
+double Point::x() const {
 	return m_x;
 }
 
@@ -65,14 +61,14 @@ float Point::getX() const {
 
 
 
-void Point::setY(float y) {
+void Point::setY(double y) {
 	m_y = y;
 }
 
 
 
 
-float Point::getY() const {
+double Point::y() const {
 	return m_y;
 }
 
@@ -80,7 +76,7 @@ float Point::getY() const {
 
 
 
-void Point::setZ(float z) {
+void Point::setZ(double z) {
 	m_z = z;
 }
 
@@ -88,7 +84,7 @@ void Point::setZ(float z) {
 
 
 
-float Point::getZ() const {
+double Point::z() const {
 	return m_z;
 }
 
@@ -104,45 +100,47 @@ void Point::setLabel(string label) {
 
 
 
-const string& Point::getLabel() const {
+const string& Point::label() const {
 	return m_label;
 }
 
 
 
 
-void Point::setTime(int year, int month, int day) {
-	time_t rawTime;
+string Point::toString() const {
+	string output = "";
 
-	delete m_time;
+	output += m_label + "(" + to_string(m_x) + ", " + to_string(m_y) + ", " + to_string(m_z) + ", ";
+	output += m_datetime->toString();
+	output += ")";
 
-	m_time = localtime(&rawTime);
-	m_time->tm_year = year;
-	m_time->tm_mon = month;
-	m_time->tm_mday = day;
+	return output;
 }
 
-
-
-
-void Point::setTime(int year, int month, int day, int hour, int min, int sec) {
-	Point::setTime(year, month, day);
-
-	m_time->tm_hour = hour;
-	m_time->tm_min = min;
-	m_time->tm_sec = sec;
+DateTime* Point::dateTime() const {
+	return m_datetime;
 }
 
-
-
-
-tm* Point::getTime() const {
-	return m_time;
+double Point::velocX() const {
+	return m_velocX;
 }
 
+void Point::setVelocX(double velocX) {
+	m_velocX = velocX;
+}
 
+double Point::velocY() const {
+	return m_velocY;
+}
 
+void Point::setVelocY(double velocY) {
+	m_velocY = velocY;
+}
 
-ostream& operator<<(ostream& os, const Point& point) {
-	return os << "Point(" << point.getX() << ", " << point.getY() << ", " << point.getX() << ")";
+double Point::velocZ() const {
+	return m_velocZ;
+}
+
+void Point::setVelocZ(double velocZ) {
+	m_velocZ = velocZ;
 }

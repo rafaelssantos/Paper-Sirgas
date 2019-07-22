@@ -1,10 +1,9 @@
 #ifndef POINT_H
 #define POINT_H
 
-
-#include <ctime>
-#include <ostream>
+#include <iostream>
 #include <string>
+#include "datetime.h"
 
 
 
@@ -12,46 +11,54 @@ class Point {
 public:
 	Point();
 
-	Point(float x, float y, float z);
+	Point(double x, double y, double z);
 
-	Point(float x, float y, float z, std::string label);
+	Point(double x, double y, double z, std::string label);
 
 	virtual ~Point();
 
-	void setX(float x);
+	void setX(double x);
 
-	float getX() const;
+	double x() const;
 
-	void setY(float y);
+	void setY(double y);
 
-	float getY() const;
+	double y() const;
 
-	void setZ(float z);
+	void setZ(double z);
 
-	float getZ() const;
+	double z() const;
 
 	void setLabel(std::string label);
 
-	const std::string& getLabel() const;
+	const std::string& label() const;
 
-	void setTime(int year, int month, int day);
+	std::string toString() const;
 
-	void setTime(int year, int month, int day, int hour, int min, int sec);
+	DateTime* dateTime() const;
 
-	tm* getTime() const;
+	double velocX() const;
+
+	void setVelocX(double velocX);
+
+	double velocY() const;
+
+	void setVelocY(double velocY);
+
+	double velocZ() const;
+
+	void setVelocZ(double velocZ);
 
 private:
-	float m_x;
-	float m_y;
-	float m_z;
+	double m_x;
+	double m_y;
+	double m_z;
+	double m_velocX;
+	double m_velocY;
+	double m_velocZ;
 
 	std::string m_label;
-	std::tm* m_time;
+	DateTime* m_datetime;
 };
-
-
-std::ostream& operator<<(std::ostream& os, const Point& point);
-
-
 
 #endif    // POINT_H

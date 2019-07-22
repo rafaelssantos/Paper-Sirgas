@@ -11,9 +11,11 @@ public:
 
 	Point* loadPoint(std::string filePath) const;
 
-	Point* buildPoint(float x, float y, float z, std::string label, int year, int month, int day) const;
+	Point* buildPoint(double x, double y, double z, std::string label, int year, int month, int day) const;
 
-	void updateCoordByEpoch(const Point& referencePoint, float velX, float velY, float velZ, Point* point) const;
+	double calcDeltaEpoch(const Point& aprioriPoint, const Point& point) const;
+
+	void updateEpoch(const Point& aprioriPoint, Point* point) const;
 
 
 private:
@@ -21,5 +23,7 @@ private:
 
 	~PointManager();
 };
+
+
 
 #endif    // POINTCALCULATOR_H

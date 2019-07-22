@@ -1,7 +1,4 @@
-#include <chrono>
-#include <fstream>
 #include <iostream>
-#include <thread>
 
 #include "point.h"
 #include "pointmanager.h"
@@ -36,11 +33,9 @@ int main(int argc, char* argv[]) {
 
 
 
+	Point* aprioriPoint = PointManager::instance().loadPoint(pointFilepath);
+	std::cout << aprioriPoint->toString() << "\n";
 
-	Point* referencePoint = PointManager::instance().loadPoint(pointFilepath);
-
-
-	std::cout << referencePoint << "\n";
 
 
 	//	std::ifstream ifs("/home/rafaelssantos/workspaces/bnc-sirgas/PPTE00BRA_U_20192030000_01D_01S.ppp");
