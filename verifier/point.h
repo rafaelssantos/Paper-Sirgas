@@ -49,6 +49,20 @@ public:
 
 	void setVelocZ(double velocZ);
 
+	double sigmaX() const;
+
+	void setSigmaX(double sigmaX);
+
+	double sigmaY() const;
+
+	void setSigmaY(double sigmaY);
+
+	double sigmaZ() const;
+
+	void setSigmaZ(double sigmaZ);
+
+
+
 private:
 	double m_x;
 	double m_y;
@@ -56,6 +70,10 @@ private:
 	double m_velocX;
 	double m_velocY;
 	double m_velocZ;
+
+	double m_sigmaX;
+	double m_sigmaY;
+	double m_sigmaZ;
 
 	std::string m_label;
 	DateTime* m_datetime;

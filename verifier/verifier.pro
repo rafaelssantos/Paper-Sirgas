@@ -6,9 +6,11 @@ CONFIG -= qt
 SOURCES += main.cpp \
     point.cpp \
     pointmanager.cpp \
-    datetime.cpp
+    datetime.cpp \
+    inspector.cpp
 
 HEADERS += \
     point.h \
     pointmanager.h \
-    datetime.h
+    datetime.h \
+    inspector.h

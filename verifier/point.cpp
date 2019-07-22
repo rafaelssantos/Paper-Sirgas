@@ -14,9 +14,8 @@ Point::Point() {
 	m_x = m_y = m_z = 0.0f;
 	m_label = "";
 	m_datetime = new DateTime();
-	m_velocX = 0;
-	m_velocY = 0;
-	m_velocZ = 0;
+	m_velocX = m_velocY = m_velocZ = 0;
+	m_sigmaX = m_sigmaY = m_sigmaZ = 0;
 }
 
 
@@ -143,4 +142,28 @@ double Point::velocZ() const {
 
 void Point::setVelocZ(double velocZ) {
 	m_velocZ = velocZ;
+}
+
+double Point::sigmaX() const {
+	return m_sigmaX;
+}
+
+void Point::setSigmaX(double sigmaX) {
+	m_sigmaX = sigmaX;
+}
+
+double Point::sigmaY() const {
+	return m_sigmaY;
+}
+
+void Point::setSigmaY(double sigmaY) {
+	m_sigmaY = sigmaY;
+}
+
+double Point::sigmaZ() const {
+	return m_sigmaZ;
+}
+
+void Point::setSigmaZ(double sigmaZ) {
+	m_sigmaZ = sigmaZ;
 }

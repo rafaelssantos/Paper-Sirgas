@@ -13,15 +13,19 @@ public:
 
 	Point* buildPoint(double x, double y, double z, std::string label, int year, int month, int day) const;
 
-	double calcDeltaEpoch(const Point& aprioriPoint, const Point& point) const;
+	Point* extract(std::string line) const;
 
-	void updateEpoch(const Point& aprioriPoint, Point* point) const;
+	double calcDeltaEpoch(const Point& refPoint, const Point& point) const;
+
+	void updateEpoch(const Point& refPoint, Point* point) const;
 
 
 private:
 	PointManager();
 
 	~PointManager();
+
+	void extractDateTime(char* data, Point* point) const;
 };
 
 

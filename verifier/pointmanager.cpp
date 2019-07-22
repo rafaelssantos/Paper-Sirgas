@@ -1,6 +1,7 @@
 #include "pointmanager.h"
 
 
+#include <cstring>
 #include <ctime>
 #include <fstream>
 #include <iostream>
@@ -80,8 +81,34 @@ Point* PointManager::buildPoint(double x, double y, double z, std::string label,
 
 
 
-double PointManager::calcDeltaEpoch(const Point& aprioriPoint, const Point& point) const {
-	long deltaSeconds = difftime(mktime(aprioriPoint.dateTime()->tm()), mktime(point.dateTime()->tm()));
+Point* PointManager::extract(string line) const {
+	Point* point = new Point();
+	string label;
+	double x, y, z;
+	double sigmaX, sigmaY, sigmaZ;
+	int year, month, day;
+
+
+	char* dateTime;
+	char cLine[line.length() + 1];
+
+	strcpy(cLine, line.c_str());
+
+	dateTime = strtok(cLine, " ");
+
+
+	extractDateTime(dateTime, point);
+
+
+	return point;
+}
+
+
+
+
+
+double PointManager::calcDeltaEpoch(const Point& refPoint, const Point& point) const {
+	long deltaSeconds = difftime(mktime(refPoint.dateTime()->tm()), mktime(point.dateTime()->tm()));
 
 	return (deltaSeconds / 86400.0) / 365.0;
 }
@@ -90,12 +117,12 @@ double PointManager::calcDeltaEpoch(const Point& aprioriPoint, const Point& poin
 
 
 
-void PointManager::updateEpoch(const Point& aprioriPoint, Point* point) const {
-	double delta = calcDeltaEpoch(aprioriPoint, *point);
+void PointManager::updateEpoch(const Point& refPoint, Point* point) const {
+	double delta = calcDeltaEpoch(refPoint, *point);
 
-	point->setX(point->x() + delta * aprioriPoint.velocX());
-	point->setX(point->y() + delta * aprioriPoint.velocY());
-	point->setX(point->z() + delta * aprioriPoint.velocZ());
+	point->setX(point->x() + delta * refPoint.velocX());
+	point->setX(point->y() + delta * refPoint.velocY());
+	point->setX(point->z() + delta * refPoint.velocZ());
 }
 
 
@@ -110,4 +137,32 @@ PointManager::PointManager() {
 
 
 PointManager::~PointManager() {
+}
+
+
+
+void PointManager::extractDateTime(char* data, Point* point) const {
+	char* date;
+	char* time;
+	char* token;
+
+
+	date = strtok(data, "_");
+	time = strtok(nullptr, "_");
+
+
+	token = strtok(date, "-");
+	point->dateTime()->setYear(atoi(token));
+	token = strtok(nullptr, "-");
+	point->dateTime()->setMonth(atoi(token));
+	token = strtok(nullptr, "-");
+	point->dateTime()->setDay(atoi(token));
+
+
+	token = strtok(time, ":");
+	point->dateTime()->setHour(atoi(token));
+	token = strtok(nullptr, ":");
+	point->dateTime()->setMin(atoi(token));
+	token = strtok(nullptr, ":");
+	point->dateTime()->setSec(static_cast<int>(atof(token)));
 }
