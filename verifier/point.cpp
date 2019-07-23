@@ -109,9 +109,7 @@ const string& Point::label() const {
 string Point::toString() const {
 	string output = "";
 
-	output += m_label + "(" + to_string(m_x) + ", " + to_string(m_y) + ", " + to_string(m_z) + ", ";
-	output += m_datetime->toString();
-	output += ")";
+	output += m_label + "(" + to_string(m_x) + " +- " + to_string(m_sigmaX) + ", " + to_string(m_y) + " +- " + to_string(m_sigmaY) + ", " + to_string(m_z) + " +- " + to_string(m_sigmaZ) + ", " + m_datetime->toString() + ")";
 
 	return output;
 }

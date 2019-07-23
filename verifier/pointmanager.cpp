@@ -1,11 +1,10 @@
 #include "pointmanager.h"
 
 
+#include <QStringList>
 #include <cstring>
 #include <ctime>
 #include <fstream>
-#include <iostream>
-
 
 
 
@@ -35,26 +34,40 @@ Point* PointManager::loadPoint(string filePath) const {
 		string label;
 		double x, y, z;
 		double velocX, velocY, velocZ;
+		double sigmaX, sigmaY, sigmaZ;
 		int year, month, day;
+
 
 		std::getline(file, label);
 		file >> x;
 		file >> y;
 		file >> z;
 
-		file >> year;
-		file >> month;
-		file >> day;
+		file >> sigmaX;
+		file >> sigmaY;
+		file >> sigmaZ;
 
 		file >> velocX;
 		file >> velocY;
 		file >> velocZ;
+
+		file >> year;
+		file >> month;
+		file >> day;
 
 		point = new Point(x, y, z, label);
 
 		point->dateTime()->setYear(year);
 		point->dateTime()->setMonth(month);
 		point->dateTime()->setDay(day);
+
+		point->setVelocX(velocX);
+		point->setVelocY(velocY);
+		point->setVelocZ(velocZ);
+
+		point->setSigmaX(sigmaX);
+		point->setSigmaY(sigmaY);
+		point->setSigmaZ(sigmaZ);
 
 		file.close();
 	}
@@ -82,23 +95,15 @@ Point* PointManager::buildPoint(double x, double y, double z, std::string label,
 
 
 Point* PointManager::extract(string line) const {
+	QString data(line.c_str());
+	QStringList tokens = data.split(" ");
+
 	Point* point = new Point();
-	string label;
-	double x, y, z;
-	double sigmaX, sigmaY, sigmaZ;
-	int year, month, day;
 
-
-	char* dateTime;
-	char cLine[line.length() + 1];
-
-	strcpy(cLine, line.c_str());
-
-	dateTime = strtok(cLine, " ");
-
-
-	extractDateTime(dateTime, point);
-
+	extractDateTime(tokens.at(0), point);
+	point->setLabel(tokens.at(1).toStdString());
+	tokens = data.split(QString(point->label().c_str()));
+	extractCoordinates(tokens.at(1), point);
 
 	return point;
 }
@@ -121,8 +126,12 @@ void PointManager::updateEpoch(const Point& refPoint, Point* point) const {
 	double delta = calcDeltaEpoch(refPoint, *point);
 
 	point->setX(point->x() + delta * refPoint.velocX());
-	point->setX(point->y() + delta * refPoint.velocY());
-	point->setX(point->z() + delta * refPoint.velocZ());
+	point->setY(point->y() + delta * refPoint.velocY());
+	point->setZ(point->z() + delta * refPoint.velocZ());
+
+	point->dateTime()->setDay(refPoint.dateTime()->day());
+	point->dateTime()->setMonth(refPoint.dateTime()->month());
+	point->dateTime()->setYear(refPoint.dateTime()->year());
 }
 
 
@@ -141,28 +150,43 @@ PointManager::~PointManager() {
 
 
 
-void PointManager::extractDateTime(char* data, Point* point) const {
-	char* date;
-	char* time;
-	char* token;
+void PointManager::extractDateTime(const QString& dateTime, Point* point) const {
+	QStringList tokens = dateTime.split("_");
+	QStringList dateTokens = tokens.at(0).split("-");
+	QStringList timeTokens = tokens.at(1).split(":");
+
+	point->dateTime()->setYear(dateTokens.at(0).toInt());
+	point->dateTime()->setMonth(dateTokens.at(1).toInt());
+	point->dateTime()->setDay(dateTokens.at(2).toInt());
+
+	point->dateTime()->setHour(timeTokens.at(0).toInt());
+	point->dateTime()->setMin(timeTokens.at(1).toInt());
+	point->dateTime()->setSec(static_cast<int>(timeTokens.at(2).toDouble()));
+}
 
 
-	date = strtok(data, "_");
-	time = strtok(nullptr, "_");
 
 
-	token = strtok(date, "-");
-	point->dateTime()->setYear(atoi(token));
-	token = strtok(nullptr, "-");
-	point->dateTime()->setMonth(atoi(token));
-	token = strtok(nullptr, "-");
-	point->dateTime()->setDay(atoi(token));
 
+void PointManager::extractCoordinates(const QString& coordinates, Point* point) const {
+	QStringList tokens = coordinates.split(" ");
 
-	token = strtok(time, ":");
-	point->dateTime()->setHour(atoi(token));
-	token = strtok(nullptr, ":");
-	point->dateTime()->setMin(atoi(token));
-	token = strtok(nullptr, ":");
-	point->dateTime()->setSec(static_cast<int>(atof(token)));
+	for (int i = 0; i < tokens.length(); i++) {
+		if (tokens.at(i).contains("x", Qt::CaseInsensitive)) {
+			i = i + 2;
+			point->setX(tokens.at(i).toDouble());
+			i = i + 2;
+			point->setSigmaX(tokens.at(i).toDouble());
+		} else if (tokens.at(i).contains("y", Qt::CaseInsensitive)) {
+			i = i + 2;
+			point->setY(tokens.at(i).toDouble());
+			i = i + 2;
+			point->setSigmaY(tokens.at(i).toDouble());
+		} else if (tokens.at(i).contains("z", Qt::CaseInsensitive)) {
+			i = i + 2;
+			point->setZ(tokens.at(i).toDouble());
+			i = i + 2;
+			point->setSigmaZ(tokens.at(i).toDouble());
+		}
+	}
 }

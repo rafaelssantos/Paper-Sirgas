@@ -1,7 +1,9 @@
 #ifndef POINTMANAGER_H
 #define POINTMANAGER_H
 
+#include <QString>
 #include <string>
+
 #include "point.h"
 
 
@@ -25,7 +27,8 @@ private:
 
 	~PointManager();
 
-	void extractDateTime(char* data, Point* point) const;
+	void extractDateTime(const QString& dateTime, Point* point) const;
+	void extractCoordinates(const QString& coordinates, Point* point) const;
 };
 
 

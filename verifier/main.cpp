@@ -1,7 +1,9 @@
+#include <QCoreApplication>
 #include <chrono>
-#include <fstream>
 #include <iostream>
+#include <fstream>
 #include <thread>
+#include "settings.h"
 #include "inspector.h"
 #include "point.h"
 #include "pointmanager.h"
@@ -27,50 +29,42 @@ void checkNumberOfParams(int argc) {
 
 
 int main(int argc, char* argv[]) {
-	string refFilePath = "";
-	string streamFilePath = "";
-	Point* refPoint = nullptr;
+	QCoreApplication a(argc, argv);
+
+	Settings::instance().handleOptions(argc, argv);
 
 
-
-	checkNumberOfParams(argc);
-
-
-	for (int i = 0; i < argc; i++) {
-		string param(argv[i]);
-
-		if (param.compare("--reference-file") == 0 || param.compare("-r") == 0) {
-			string input(argv[++i]);
-			refFilePath = input;
-		} else if (param.compare("--stream-file") == 0 || param.compare("-s") == 0) {
-			string input(argv[++i]);
-			streamFilePath = input;
-		}
-	}
+	Point* refPoint = PointManager::instance().loadPoint(Settings::instance().refPointFilePath());
 
 
-	refPoint = PointManager::instance().loadPoint(refFilePath);
-
-	std::ifstream ifs(streamFilePath);
-
+	ifstream ifs(Settings::instance().streamFilePath());
 	if (ifs.is_open()) {
-		std::string line;
+		string line;
 
 		while (true) {
-			while (std::getline(ifs, line)) {
+			while (getline(ifs, line)) {
 				if (Inspector::instance().hasCoordinates(line, refPoint->label())) {
 					Point* p = PointManager::instance().extract(line);
-					std::cout << p->toString() << "\n";
+					cout << refPoint->toString() << " REF 2000.4\n";
+					cout << p->toString() << " BNC\n";
+					PointManager::instance().updateEpoch(*refPoint, p);
+					cout << p->toString() << " BNC 2000.4\n\n";
+
+					delete p;
 				}
 			}
 			if (!ifs.eof()) {
 				break;
 			}
-			std::this_thread::sleep_for(std::chrono::seconds(5));
+			this_thread::sleep_for(chrono::seconds(5));
 			ifs.clear();
 		}
 		ifs.close();
 	}
 
-	return 0;
+
+	delete refPoint;
+	refPoint = nullptr;
+
+	return a.exec();
 }
