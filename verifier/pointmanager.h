@@ -21,6 +21,8 @@ public:
 
 	void updateEpoch(const Point& refPoint, Point* point) const;
 
+	bool checkIntegrity(const Point& refPoint, const Point& point, double threshold) const;
+
 
 private:
 	PointManager();
@@ -28,6 +30,7 @@ private:
 	~PointManager();
 
 	void extractDateTime(const QString& dateTime, Point* point) const;
+
 	void extractCoordinates(const QString& coordinates, Point* point) const;
 };
 

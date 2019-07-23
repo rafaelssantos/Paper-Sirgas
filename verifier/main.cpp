@@ -30,11 +30,14 @@ void checkNumberOfParams(int argc) {
 
 int main(int argc, char* argv[]) {
 	QCoreApplication a(argc, argv);
-
 	Settings::instance().handleOptions(argc, argv);
 
 
+
 	Point* refPoint = PointManager::instance().loadPoint(Settings::instance().refPointFilePath());
+	int countTotal = 0;
+	int countOk = 0;
+	double percent;
 
 
 	ifstream ifs(Settings::instance().streamFilePath());
@@ -49,6 +52,14 @@ int main(int argc, char* argv[]) {
 					cout << p->toString() << " BNC\n";
 					PointManager::instance().updateEpoch(*refPoint, p);
 					cout << p->toString() << " BNC 2000.4\n\n";
+
+					countTotal++;
+					if(PointManager::instance().checkIntegrity(*refPoint, *p, 0.30)){
+						countOk++;
+					}
+					percent = ((1.0 * countOk ) / countTotal) * 100.0;
+
+					cout << "Percentage: " << percent << "%\n\n";
 
 					delete p;
 				}

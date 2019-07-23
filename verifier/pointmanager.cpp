@@ -138,6 +138,17 @@ void PointManager::updateEpoch(const Point& refPoint, Point* point) const {
 
 
 
+bool PointManager::checkIntegrity(const Point& refPoint, const Point& point, double threshold) const{
+	if(abs(refPoint.x() - point.x()) > threshold || abs(refPoint.y() - point.y()) > threshold || abs(refPoint.z() - point.z()) > threshold){
+		return false;
+	}
+	return true;
+}
+
+
+
+
+
 PointManager::PointManager() {
 }
 
