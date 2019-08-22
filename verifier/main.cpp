@@ -34,13 +34,13 @@ int main(int argc, char* argv[]) {
 
 
 
-	Point* refPoint = PointManager::instance().loadPoint(Settings::instance().refPointFilePath());
+	Point* refPoint = PointManager::instance().loadPoint(Settings::instance().refDataPath(0));
+	Point* refPointCur = PointManager::instance().loadPoint(Settings::instance().refDataPath(0));
 	int countTotal = 0;
 	int countOk = 0;
 	double percent;
 
-
-	ifstream ifs(Settings::instance().streamFilePath());
+	ifstream ifs(Settings::instance().streamDataPath(0));
 	if (ifs.is_open()) {
 		string line;
 
@@ -48,13 +48,14 @@ int main(int argc, char* argv[]) {
 			while (getline(ifs, line)) {
 				if (Inspector::instance().hasCoordinates(line, refPoint->label())) {
 					Point* p = PointManager::instance().extract(line);
-					cout << refPoint->toString() << " REF 2000.4\n";
-					cout << p->toString() << " BNC\n";
-					PointManager::instance().updateEpoch(*refPoint, p);
-					cout << p->toString() << " BNC 2000.4\n\n";
+
+					cout << refPoint->toString() << " REFERENCE POINT\n";
+					PointManager::instance().updateRefEpoch(*p, refPointCur);
+					cout << refPointCur->toString() << " REFERENCE POINT UPDATED\n";
+					cout << p->toString() << " BNC POINT PPP\n\n";
 
 					countTotal++;
-					if(PointManager::instance().checkIntegrity(*refPoint, *p, 0.30)){
+					if(PointManager::instance().checkIntegrity(*refPointCur, *p, 0.30)){
 						countOk++;
 					}
 					percent = ((1.0 * countOk ) / countTotal) * 100.0;

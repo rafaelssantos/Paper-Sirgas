@@ -12,6 +12,8 @@ public:
 
 	DateTime(int year, int month, int day, int hour, int min, int sec);
 
+	DateTime(const DateTime &dateTime);
+
 	virtual ~DateTime();
 
 	std::string toString() const;

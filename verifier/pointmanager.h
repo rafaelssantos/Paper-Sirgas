@@ -17,9 +17,9 @@ public:
 
 	Point* extract(std::string line) const;
 
-	double calcDeltaEpoch(const Point& refPoint, const Point& point) const;
+	double calcDeltaEpoch(const Point& point, const Point& refPoint) const;
 
-	void updateEpoch(const Point& refPoint, Point* point) const;
+	void updateRefEpoch(const Point& point, Point* refPoint) const;
 
 	bool checkIntegrity(const Point& refPoint, const Point& point, double threshold) const;
 

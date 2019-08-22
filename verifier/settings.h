@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <vector>
 
 
 class Settings {
@@ -11,24 +12,32 @@ public:
 
 	void handleOptions(int argc, char* argv[]);
 
-	std::string streamFilePath() const;
+	std::string streamDataPath(int index) const;
 
-	void setStreamFilePath(const std::string& streamFilePath);
+	void setStreamDataPath(int index, const std::string& streamDataPath);
 
-	std::string refPointFilePath() const;
+	void addStreamDataPath(const std::string& streamDataPath);
 
-	void setRefPointFilePath(const std::string& refPointFilePath);
+	std::string refDataPath(int index) const;
+
+	void setDataFilePath(int index, const std::string& refDataPath);
+
+	void addDataFilePath(const std::string& refDataPath);
 
 	std::string helpMenu() const;
+
+	int StationCount() const;
+
+
 
 private:
 	Settings();
 
 	~Settings();
 
-	std::string m_streamFilePath;
+	std::vector<std::string> m_sDataFilePaths;
 
-	std::string m_refPointFilePath;
+	std::vector<std::string> m_refFilePaths;
 };
 
 

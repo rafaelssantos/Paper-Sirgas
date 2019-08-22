@@ -30,9 +30,9 @@ void Settings::handleOptions(int argc, char* argv[]) {
 			if (option.compare("-h") == 0 || option.compare("--help") == 0) {
 				cout << helpMenu();
 			} else if (option.compare("-s") == 0 || option.compare("--stream-file") == 0) {
-				m_streamFilePath = string(argv[++i]);
+				m_sDataFilePaths.push_back(string(argv[++i]));
 			} else if (option.compare("-r") == 0 || option.compare("--reference-point-file") == 0) {
-				m_refPointFilePath = string(argv[++i]);
+				m_refFilePaths.push_back(string(argv[++i]));
 			}
 		}
 	}
@@ -56,17 +56,31 @@ Settings::~Settings() {
 
 
 
-
-std::string Settings::refPointFilePath() const {
-	return m_refPointFilePath;
+int Settings::StationCount() const {
+	return m_refFilePaths.size();
 }
 
 
 
 
 
-void Settings::setRefPointFilePath(const std::string& refPointFilePath) {
-	m_refPointFilePath = refPointFilePath;
+std::string Settings::refDataPath(int index) const {
+	return m_refFilePaths[index];
+}
+
+
+
+
+
+void Settings::setDataFilePath(int index, const std::string& refPointFilePath) {
+	m_refFilePaths[index] = refPointFilePath;
+}
+
+
+
+
+void Settings::addDataFilePath(const string& refPointFilePath) {
+	m_refFilePaths.push_back(refPointFilePath);
 }
 
 
@@ -79,15 +93,20 @@ string Settings::helpMenu() const {
 
 
 
-
-std::string Settings::streamFilePath() const {
-	return m_streamFilePath;
+std::string Settings::streamDataPath(int index) const {
+	return m_sDataFilePaths[index];
 }
 
 
 
 
 
-void Settings::setStreamFilePath(const std::string& streamFilePath) {
-	m_streamFilePath = streamFilePath;
+void Settings::setStreamDataPath(int index, const std::string& streamFilePath) {
+	m_sDataFilePaths[index] = streamFilePath;
+}
+
+
+
+void Settings::addStreamDataPath(const string& streamFilePath) {
+	m_sDataFilePaths.push_back(streamFilePath);
 }

@@ -37,6 +37,18 @@ DateTime::DateTime(int year, int month, int day, int hour, int min, int sec) : D
 
 
 
+DateTime::DateTime(const DateTime& dateTime) {
+	m_tm = new struct tm;
+	m_tm->tm_year = dateTime.m_tm->tm_year;
+	m_tm->tm_mon = dateTime.m_tm->tm_mon;
+	m_tm->tm_mday = dateTime.m_tm->tm_mday;
+	m_tm->tm_hour = dateTime.m_tm->tm_hour;
+	m_tm->tm_min = dateTime.m_tm->tm_min;
+	m_tm->tm_sec = dateTime.m_tm->tm_sec;
+}
+
+
+
 
 
 DateTime::~DateTime() {
@@ -49,9 +61,21 @@ DateTime::~DateTime() {
 
 
 std::string DateTime::toString() const {
+	string month = to_string(m_tm->tm_mon);
+	string day = to_string(m_tm->tm_mday);
+	string hour = to_string(m_tm->tm_hour);
+	string min = to_string(m_tm->tm_min);
+	string sec = to_string(m_tm->tm_sec);
+
+	month = string(2 - month.length(), '0') + month;
+	day = string(2 - day.length(), '0') + day;
+	hour = string(2 - hour.length(), '0') + hour;
+	min = string(2 - min.length(), '0') + min;
+	sec = string(2 - sec.length(), '0') + sec;
+
 	string output = "(";
-	output += to_string(m_tm->tm_year) + "-" + to_string(m_tm->tm_mon) + "-" + to_string(m_tm->tm_mday) + ", ";
-	output += to_string(m_tm->tm_hour) + ":" + to_string(m_tm->tm_min) + ":" + to_string(m_tm->tm_sec) + ")";
+	output += to_string(m_tm->tm_year) + "-" + month + "-" + day + ", ";
+	output += hour + ":" + min + ":" + sec + ")";
 
 	return output;
 }

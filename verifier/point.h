@@ -15,6 +15,9 @@ public:
 
 	Point(double x, double y, double z, std::string label);
 
+	Point(const Point &point);
+
+
 	virtual ~Point();
 
 	void setX(double x);

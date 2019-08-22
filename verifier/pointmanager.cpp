@@ -112,8 +112,8 @@ Point* PointManager::extract(string line) const {
 
 
 
-double PointManager::calcDeltaEpoch(const Point& refPoint, const Point& point) const {
-	long deltaSeconds = difftime(mktime(refPoint.dateTime()->tm()), mktime(point.dateTime()->tm()));
+double PointManager::calcDeltaEpoch(const Point& point, const Point& refPoint) const {
+	long deltaSeconds = difftime(mktime(point.dateTime()->tm()), mktime(refPoint.dateTime()->tm()));
 
 	return (deltaSeconds / 86400.0) / 365.0;
 }
@@ -122,16 +122,24 @@ double PointManager::calcDeltaEpoch(const Point& refPoint, const Point& point) c
 
 
 
-void PointManager::updateEpoch(const Point& refPoint, Point* point) const {
-	double delta = calcDeltaEpoch(refPoint, *point);
+void PointManager::updateRefEpoch(const Point& point, Point* refPoint) const {
+	double delta = calcDeltaEpoch(point, *refPoint);
 
-	point->setX(point->x() + delta * refPoint.velocX());
-	point->setY(point->y() + delta * refPoint.velocY());
-	point->setZ(point->z() + delta * refPoint.velocZ());
+//	cout <<"\nDelta: "<< delta << "\n";
+//	cout <<"Vx: "<< refPoint->velocX() << "\n";
+//	cout <<"Vy: "<< refPoint->velocY() << "\n";
+//	cout <<"Vz: "<< refPoint->velocZ() << "\n";
 
-	point->dateTime()->setDay(refPoint.dateTime()->day());
-	point->dateTime()->setMonth(refPoint.dateTime()->month());
-	point->dateTime()->setYear(refPoint.dateTime()->year());
+	refPoint->setX(refPoint->x() + delta * refPoint->velocX());
+	refPoint->setY(refPoint->y() + delta * refPoint->velocY());
+	refPoint->setZ(refPoint->z() + delta * refPoint->velocZ());
+
+	refPoint->dateTime()->setDay(point.dateTime()->day());
+	refPoint->dateTime()->setMonth(point.dateTime()->month());
+	refPoint->dateTime()->setYear(point.dateTime()->year());
+	refPoint->dateTime()->setHour(point.dateTime()->hour());
+	refPoint->dateTime()->setMin(point.dateTime()->min());
+	refPoint->dateTime()->setSec(point.dateTime()->sec());
 }
 
 

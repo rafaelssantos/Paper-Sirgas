@@ -37,6 +37,25 @@ Point::Point(double x, double y, double z, string label) : Point(x, y, z) {
 
 
 
+
+Point::Point(const Point& point) {
+	m_datetime = new DateTime();
+
+	m_x = point.m_x;
+	m_y = point.m_y;
+	m_z = point.m_z;
+	m_velocX = point.m_velocX;
+	m_velocY = point.m_velocY;
+	m_velocZ = point.m_velocZ;
+	m_sigmaX = point.m_sigmaX;
+	m_sigmaY = point.m_sigmaY;
+	m_sigmaZ = point.m_sigmaZ;
+	m_label = point.m_label;
+	*m_datetime = *(point.m_datetime);
+}
+
+
+
 Point::~Point() {
 	delete m_datetime;
 	m_datetime = nullptr;
@@ -113,6 +132,8 @@ string Point::toString() const {
 
 	return output;
 }
+
+
 
 DateTime* Point::dateTime() const {
 	return m_datetime;

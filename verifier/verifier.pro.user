@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.5.2, 2019-07-23T15:11:56. -->
+<!-- Written by QtCreator 4.5.2, 2019-08-22T11:03:26. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -306,7 +306,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/rafaelssantos/workspaces/git/github/paper-sirgas/verifier/verifier.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
-    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">-r /home/rafaelssantos/workspaces/git/github/paper-sirgas/data/stations/PPTE0.txt -s /home/rafaelssantos/workspaces/bnc-sirgas/PPTE00BRA_U_20192040000_01D_01S.ppp</value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">-r /home/rafaelssantos/workspaces/git/github/paper-sirgas/data/stations/PPTE0.txt -s /home/rafaelssantos/workspaces/bnc-sirgas/PPTE00BRA_U_20192340000_01D_01S.ppp</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">verifier.pro</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
