@@ -4,29 +4,22 @@
 
 #include <string>
 #include <vector>
+#include "errorcode.h"
 
 
 class Settings {
 public:
 	static Settings& instance();
 
-	void handleOptions(int argc, char* argv[]);
+	ErrorCode load(int argc, char* argv[]);
 
-	std::string streamDataPath(int index) const;
+	std::string streamPath(int index) const;
 
-	void setStreamDataPath(int index, const std::string& streamDataPath);
-
-	void addStreamDataPath(const std::string& streamDataPath);
-
-	std::string refDataPath(int index) const;
-
-	void setDataFilePath(int index, const std::string& refDataPath);
-
-	void addDataFilePath(const std::string& refDataPath);
+	std::string aprioriPath(int index) const;
 
 	std::string helpMenu() const;
 
-	int StationCount() const;
+	int pointCount() const;
 
 
 
@@ -35,9 +28,16 @@ private:
 
 	~Settings();
 
-	std::vector<std::string> m_sDataFilePaths;
+	ErrorCode handle();
 
-	std::vector<std::string> m_refFilePaths;
+	std::vector<std::string> m_streamFilePaths;
+	std::vector<std::string> m_aprioriFilePaths;
+	std::vector<std::string> m_pointLabels;
+
+	std::string m_settingFilePath;
+
+	std::string m_aprioriDir;
+	std::string m_streamDir;
 };
 
 

@@ -14,4 +14,5 @@ HEADERS += \
     pointmanager.h \
     datetime.h \
     inspector.h \
-    settings.h
+    settings.h \
+    errorcode.h

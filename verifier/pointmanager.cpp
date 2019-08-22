@@ -112,8 +112,8 @@ Point* PointManager::extract(string line) const {
 
 
 
-double PointManager::calcDeltaEpoch(const Point& point, const Point& refPoint) const {
-	long deltaSeconds = difftime(mktime(point.dateTime()->tm()), mktime(refPoint.dateTime()->tm()));
+double PointManager::calcDeltaEpoch(const Point& point, const Point& aprioriPoint) const {
+	long deltaSeconds = difftime(mktime(point.dateTime()->tm()), mktime(aprioriPoint.dateTime()->tm()));
 
 	return (deltaSeconds / 86400.0) / 365.0;
 }
@@ -122,32 +122,32 @@ double PointManager::calcDeltaEpoch(const Point& point, const Point& refPoint) c
 
 
 
-void PointManager::updateRefEpoch(const Point& point, Point* refPoint) const {
-	double delta = calcDeltaEpoch(point, *refPoint);
+void PointManager::updateRefEpoch(const Point& point, Point* aprioriPoint) const {
+	double delta = calcDeltaEpoch(point, *aprioriPoint);
 
 //	cout <<"\nDelta: "<< delta << "\n";
 //	cout <<"Vx: "<< refPoint->velocX() << "\n";
 //	cout <<"Vy: "<< refPoint->velocY() << "\n";
 //	cout <<"Vz: "<< refPoint->velocZ() << "\n";
 
-	refPoint->setX(refPoint->x() + delta * refPoint->velocX());
-	refPoint->setY(refPoint->y() + delta * refPoint->velocY());
-	refPoint->setZ(refPoint->z() + delta * refPoint->velocZ());
+	aprioriPoint->setX(aprioriPoint->x() + delta * aprioriPoint->velocX());
+	aprioriPoint->setY(aprioriPoint->y() + delta * aprioriPoint->velocY());
+	aprioriPoint->setZ(aprioriPoint->z() + delta * aprioriPoint->velocZ());
 
-	refPoint->dateTime()->setDay(point.dateTime()->day());
-	refPoint->dateTime()->setMonth(point.dateTime()->month());
-	refPoint->dateTime()->setYear(point.dateTime()->year());
-	refPoint->dateTime()->setHour(point.dateTime()->hour());
-	refPoint->dateTime()->setMin(point.dateTime()->min());
-	refPoint->dateTime()->setSec(point.dateTime()->sec());
+	aprioriPoint->dateTime()->setDay(point.dateTime()->day());
+	aprioriPoint->dateTime()->setMonth(point.dateTime()->month());
+	aprioriPoint->dateTime()->setYear(point.dateTime()->year());
+	aprioriPoint->dateTime()->setHour(point.dateTime()->hour());
+	aprioriPoint->dateTime()->setMin(point.dateTime()->min());
+	aprioriPoint->dateTime()->setSec(point.dateTime()->sec());
 }
 
 
 
 
 
-bool PointManager::checkIntegrity(const Point& refPoint, const Point& point, double threshold) const{
-	if(abs(refPoint.x() - point.x()) > threshold || abs(refPoint.y() - point.y()) > threshold || abs(refPoint.z() - point.z()) > threshold){
+bool PointManager::checkIntegrity(const Point& aprioriPoint, const Point& point, double threshold) const{
+	if(abs(aprioriPoint.x() - point.x()) > threshold || abs(aprioriPoint.y() - point.y()) > threshold || abs(aprioriPoint.z() - point.z()) > threshold){
 		return false;
 	}
 	return true;

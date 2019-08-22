@@ -29,42 +29,37 @@ void checkNumberOfParams(int argc) {
 
 
 int main(int argc, char* argv[]) {
-	QCoreApplication a(argc, argv);
-	Settings::instance().handleOptions(argc, argv);
+	QCoreApplication app(argc, argv);
 
+	if (Settings::instance().load(argc, argv) != ErrorCode::SUCCESS){
+		exit(1);
+	}
 
+	std::cout << Settings::instance().aprioriPath(0) << "\n";
+	std::cout << Settings::instance().streamPath(0) << "\n";
 
-	Point* refPoint = PointManager::instance().loadPoint(Settings::instance().refDataPath(0));
-	Point* refPointCur = PointManager::instance().loadPoint(Settings::instance().refDataPath(0));
-	int countTotal = 0;
-	int countOk = 0;
-	double percent;
+	Point* apriori = PointManager::instance().loadPoint(Settings::instance().aprioriPath(0));
+	Point* aprioriUpdated = PointManager::instance().loadPoint(Settings::instance().aprioriPath(0));
 
-	ifstream ifs(Settings::instance().streamDataPath(0));
+	ifstream ifs(Settings::instance().streamPath(0));
+
 	if (ifs.is_open()) {
 		string line;
 
 		while (true) {
 			while (getline(ifs, line)) {
-				if (Inspector::instance().hasCoordinates(line, refPoint->label())) {
-					Point* p = PointManager::instance().extract(line);
+				if (Inspector::instance().hasCoordinates(line, apriori->label())) {
+					Point* stream = PointManager::instance().extract(line);
+					PointManager::instance().updateRefEpoch(*stream, aprioriUpdated);
 
-					cout << refPoint->toString() << " REFERENCE POINT\n";
-					PointManager::instance().updateRefEpoch(*p, refPointCur);
-					cout << refPointCur->toString() << " REFERENCE POINT UPDATED\n";
-					cout << p->toString() << " BNC POINT PPP\n\n";
+					cout << apriori->toString() << " APRIORI POINT\n";
+					cout << aprioriUpdated->toString() << " APRIORI POINT UPDATED\n";
+					cout << stream->toString() << " PPP POINT\n\n";
 
-					countTotal++;
-					if(PointManager::instance().checkIntegrity(*refPointCur, *p, 0.30)){
-						countOk++;
-					}
-					percent = ((1.0 * countOk ) / countTotal) * 100.0;
-
-					cout << "Percentage: " << percent << "%\n\n";
-
-					delete p;
+					delete stream;
 				}
 			}
+
 			if (!ifs.eof()) {
 				break;
 			}
@@ -75,8 +70,13 @@ int main(int argc, char* argv[]) {
 	}
 
 
-	delete refPoint;
-	refPoint = nullptr;
+	delete aprioriUpdated;
+	aprioriUpdated = nullptr;
 
-	return a.exec();
+	delete apriori;
+	apriori = nullptr;
+
+
+
+	return app.exec();
 }
