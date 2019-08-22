@@ -112,8 +112,8 @@ Point* PointManager::extract(string line) const {
 
 
 
-double PointManager::calcDeltaEpoch(const Point& point, const Point& aprioriPoint) const {
-	long deltaSeconds = difftime(mktime(point.dateTime()->tm()), mktime(aprioriPoint.dateTime()->tm()));
+double PointManager::calcDeltaEpoch(const Point& point, const Point& groundTruth) const {
+	long deltaSeconds = difftime(mktime(point.dateTime()->tm()), mktime(groundTruth.dateTime()->tm()));
 
 	return (deltaSeconds / 86400.0) / 365.0;
 }
@@ -122,32 +122,27 @@ double PointManager::calcDeltaEpoch(const Point& point, const Point& aprioriPoin
 
 
 
-void PointManager::updateRefEpoch(const Point& point, Point* aprioriPoint) const {
-	double delta = calcDeltaEpoch(point, *aprioriPoint);
+void PointManager::updateRefEpoch(const Point& point, Point* groundTruth) const {
+	double delta = calcDeltaEpoch(point, *groundTruth);
 
-//	cout <<"\nDelta: "<< delta << "\n";
-//	cout <<"Vx: "<< refPoint->velocX() << "\n";
-//	cout <<"Vy: "<< refPoint->velocY() << "\n";
-//	cout <<"Vz: "<< refPoint->velocZ() << "\n";
+	groundTruth->setX(groundTruth->x() + delta * groundTruth->velocX());
+	groundTruth->setY(groundTruth->y() + delta * groundTruth->velocY());
+	groundTruth->setZ(groundTruth->z() + delta * groundTruth->velocZ());
 
-	aprioriPoint->setX(aprioriPoint->x() + delta * aprioriPoint->velocX());
-	aprioriPoint->setY(aprioriPoint->y() + delta * aprioriPoint->velocY());
-	aprioriPoint->setZ(aprioriPoint->z() + delta * aprioriPoint->velocZ());
-
-	aprioriPoint->dateTime()->setDay(point.dateTime()->day());
-	aprioriPoint->dateTime()->setMonth(point.dateTime()->month());
-	aprioriPoint->dateTime()->setYear(point.dateTime()->year());
-	aprioriPoint->dateTime()->setHour(point.dateTime()->hour());
-	aprioriPoint->dateTime()->setMin(point.dateTime()->min());
-	aprioriPoint->dateTime()->setSec(point.dateTime()->sec());
+	groundTruth->dateTime()->setDay(point.dateTime()->day());
+	groundTruth->dateTime()->setMonth(point.dateTime()->month());
+	groundTruth->dateTime()->setYear(point.dateTime()->year());
+	groundTruth->dateTime()->setHour(point.dateTime()->hour());
+	groundTruth->dateTime()->setMin(point.dateTime()->min());
+	groundTruth->dateTime()->setSec(point.dateTime()->sec());
 }
 
 
 
 
 
-bool PointManager::checkIntegrity(const Point& aprioriPoint, const Point& point, double threshold) const{
-	if(abs(aprioriPoint.x() - point.x()) > threshold || abs(aprioriPoint.y() - point.y()) > threshold || abs(aprioriPoint.z() - point.z()) > threshold){
+bool PointManager::checkIntegrity(const Point& groundTruth, const Point& point, double threshold) const{
+	if(abs(groundTruth.x() - point.x()) > threshold || abs(groundTruth.y() - point.y()) > threshold || abs(groundTruth.z() - point.z()) > threshold){
 		return false;
 	}
 	return true;

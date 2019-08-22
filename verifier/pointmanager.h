@@ -17,11 +17,11 @@ public:
 
 	Point* extract(std::string line) const;
 
-	double calcDeltaEpoch(const Point& point, const Point& aprioriPoint) const;
+	double calcDeltaEpoch(const Point& point, const Point& groundTruth) const;
 
-	void updateRefEpoch(const Point& point, Point* aprioriPoint) const;
+	void updateRefEpoch(const Point& point, Point* groundTruth) const;
 
-	bool checkIntegrity(const Point& aprioriPoint, const Point& point, double threshold) const;
+	bool checkIntegrity(const Point& groundTruth, const Point& point, double threshold) const;
 
 
 private:

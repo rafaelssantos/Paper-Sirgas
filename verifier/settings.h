@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "errorcode.h"
 
 
@@ -13,13 +14,17 @@ public:
 
 	ErrorCode load(int argc, char* argv[]);
 
-	std::string streamPath(int index) const;
+	std::string streamPaths(int index) const;
 
-	std::string aprioriPath(int index) const;
+	std::string groundTruthPaths(int index) const;
 
 	std::string helpMenu() const;
 
-	int pointCount() const;
+	ErrorCode grabFilePaths();
+
+	int filesCount() const;
+
+	std::string label() const;
 
 
 
@@ -28,15 +33,13 @@ private:
 
 	~Settings();
 
-	ErrorCode handle();
-
 	std::vector<std::string> m_streamFilePaths;
-	std::vector<std::string> m_aprioriFilePaths;
-	std::vector<std::string> m_pointLabels;
+	std::vector<std::string> m_groundTruthFilePaths;
+	std::string m_label;
 
-	std::string m_settingFilePath;
+	std::string m_settingsFilePath;
 
-	std::string m_aprioriDir;
+	std::string m_groundTruthDir;
 	std::string m_streamDir;
 };
 

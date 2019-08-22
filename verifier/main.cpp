@@ -31,50 +31,56 @@ void checkNumberOfParams(int argc) {
 int main(int argc, char* argv[]) {
 	QCoreApplication app(argc, argv);
 
-	if (Settings::instance().load(argc, argv) != ErrorCode::SUCCESS){
+	if (Settings::instance().load(argc, argv) != ErrorCode::SUCCESS || Settings::instance().grabFilePaths() != ErrorCode::SUCCESS){
 		exit(1);
 	}
 
-	std::cout << Settings::instance().aprioriPath(0) << "\n";
-	std::cout << Settings::instance().streamPath(0) << "\n";
+	int filesCount = Settings::instance().filesCount();
 
-	Point* apriori = PointManager::instance().loadPoint(Settings::instance().aprioriPath(0));
-	Point* aprioriUpdated = PointManager::instance().loadPoint(Settings::instance().aprioriPath(0));
+	for(auto i = 0; i < filesCount; i++){
+		Point* groundTruth = PointManager::instance().loadPoint(Settings::instance().groundTruthPaths(i));
+		Point* groundTruthCurTime = PointManager::instance().loadPoint(Settings::instance().groundTruthPaths(i));
 
-	ifstream ifs(Settings::instance().streamPath(0));
+		ifstream ifs(Settings::instance().streamPaths(i));
 
-	if (ifs.is_open()) {
-		string line;
+		if (ifs.is_open()) {
+			string line;
 
-		while (true) {
-			while (getline(ifs, line)) {
-				if (Inspector::instance().hasCoordinates(line, apriori->label())) {
-					Point* stream = PointManager::instance().extract(line);
-					PointManager::instance().updateRefEpoch(*stream, aprioriUpdated);
+			while (filesCount <= Settings::instance().filesCount()) {
+				while (getline(ifs, line)) {
+					if (Inspector::instance().hasCoordinates(line, groundTruth->label())) {
+						Point* stream = PointManager::instance().extract(line);
+						PointManager::instance().updateRefEpoch(*stream, groundTruthCurTime);
 
-					cout << apriori->toString() << " APRIORI POINT\n";
-					cout << aprioriUpdated->toString() << " APRIORI POINT UPDATED\n";
-					cout << stream->toString() << " PPP POINT\n\n";
+						cout << groundTruth->toString() << " GROUND TRUTH\n";
+						cout << groundTruthCurTime->toString() << " GROUND TRUTH CUR TIME\n";
+						cout << stream->toString() << " PPP POINT\n\n";
 
-					delete stream;
+						delete stream;
+					}
+				}
+				Settings::instance().grabFilePaths();
+
+				if (ifs.eof() && i < filesCount - 1) {
+					break;
+				}
+				else{
+					this_thread::sleep_for(chrono::seconds(5));
 				}
 			}
-
-			if (!ifs.eof()) {
-				break;
-			}
-			this_thread::sleep_for(chrono::seconds(5));
-			ifs.clear();
+			ifs.close();
 		}
-		ifs.close();
+
+		delete groundTruthCurTime;
+		groundTruthCurTime = nullptr;
+
+		delete groundTruth;
+		groundTruth = nullptr;
 	}
 
 
-	delete aprioriUpdated;
-	aprioriUpdated = nullptr;
 
-	delete apriori;
-	apriori = nullptr;
+
 
 
 
