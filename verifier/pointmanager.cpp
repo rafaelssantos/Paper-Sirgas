@@ -5,7 +5,7 @@
 #include <cstring>
 #include <ctime>
 #include <fstream>
-
+#include <iostream>
 
 
 
@@ -35,6 +35,7 @@ Point* PointManager::loadPoint(string filePath) const {
 		double x, y, z;
 		double velocX, velocY, velocZ;
 		double sigmaX, sigmaY, sigmaZ;
+		double latitude, longitude;
 		int year, month, day;
 
 
@@ -50,6 +51,9 @@ Point* PointManager::loadPoint(string filePath) const {
 		file >> velocX;
 		file >> velocY;
 		file >> velocZ;
+
+		file >> latitude;
+		file >> longitude;
 
 		file >> year;
 		file >> month;
@@ -69,27 +73,14 @@ Point* PointManager::loadPoint(string filePath) const {
 		point->setSigmaY(sigmaY);
 		point->setSigmaZ(sigmaZ);
 
+		point->setLatitude(latitude);
+		point->setLongitude(longitude);
+
 		file.close();
 	}
 
 	return point;
 }
-
-
-
-
-
-Point* PointManager::buildPoint(double x, double y, double z, std::string label, int year, int month, int day) const {
-	Point* point = new Point(x, y, z, label);
-
-
-	point->dateTime()->setYear(year);
-	point->dateTime()->setMonth(month);
-	point->dateTime()->setDay(day);
-
-	return point;
-}
-
 
 
 
@@ -104,10 +95,10 @@ Point* PointManager::extract(string line) const {
 	point->setLabel(tokens.at(1).toStdString());
 	tokens = data.split(QString(point->label().c_str()));
 	extractCoordinates(tokens.at(1), point);
+	extractNEU(tokens.at(1), point);
 
 	return point;
 }
-
 
 
 
@@ -141,11 +132,67 @@ void PointManager::updateRefEpoch(const Point& point, Point* groundTruth) const 
 
 
 
-bool PointManager::checkIntegrity(const Point& groundTruth, const Point& point, double threshold) const{
-	if(abs(groundTruth.x() - point.x()) > threshold || abs(groundTruth.y() - point.y()) > threshold || abs(groundTruth.z() - point.z()) > threshold){
+bool PointManager::checkIntegrityNEU(const Point& point, double thresholdNorth, double threasholdEast, double threasholdUp) const{
+	if(abs(point.north()) > thresholdNorth || abs(point.east()) > threasholdEast || abs(point.up()) > threasholdUp){
 		return false;
 	}
 	return true;
+}
+
+
+
+
+
+
+
+void PointManager::exportToJsonFile(string dirPath, string label, const vector<Point*> &points, double thresholdNorth, double threasholdEast, double threasholdUp) const {
+	ofstream ofs(dirPath + "/" + label + ".json");
+
+	string jsonString = "[\n";
+	if(ofs.is_open()){
+		size_t count = 0;
+		for(auto point = points.begin(); point != points.end(); point++){
+//			jsonSring += "\"" + (*point)->dateTime()->toString() + "\" : {";
+			jsonString += "{";
+
+			jsonString += "\"label\":\"" + (*point)->label() + "\", ";
+
+			jsonString += "\"lat\":\"" + to_string((*point)->latitude()) + "\", ";
+			jsonString += "\"long\":\"" + to_string((*point)->longitude()) + "\", ";
+
+			jsonString += "\"year\":\"" + to_string((*point)->dateTime()->year()) + "\", ";
+			jsonString += "\"month\":\"" + to_string((*point)->dateTime()->month()) + "\", ";
+			jsonString += "\"day\":\"" + to_string((*point)->dateTime()->day()) + "\", ";
+			jsonString += "\"hour\":\"" + to_string((*point)->dateTime()->hour()) + "\", ";
+			jsonString += "\"min\":\"" + to_string((*point)->dateTime()->min()) + "\", ";
+			jsonString += "\"sec\":\"" + to_string((*point)->dateTime()->sec()) + "\", ";
+
+
+			jsonString += "\"north\":\"" + to_string((*point)->north()) + "\", ";
+			jsonString += "\"east\":\"" + to_string((*point)->east()) + "\", ";
+			jsonString += "\"up\":\"" + to_string((*point)->up()) + "\", ";
+
+			jsonString += "\"sigmaNorth\":\"" + to_string((*point)->sigmaNorth()) + "\", ";
+			jsonString += "\"sigmaEast\":\"" + to_string((*point)->sigmaEast()) + "\", ";
+			jsonString += "\"sigmaUp\":\"" + to_string((*point)->sigmaUp()) + "\", ";
+
+			jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(**point, thresholdNorth, threasholdEast, threasholdUp)) + "\"";
+
+			count++;
+			if(count != points.size()){
+				jsonString += "},\n";
+			}
+			else{
+				jsonString += "}\n";
+
+			}
+		}
+		jsonString += "]";
+
+		ofs << jsonString;
+		ofs.close();
+	}
+
 }
 
 
@@ -182,8 +229,8 @@ void PointManager::extractDateTime(const QString& dateTime, Point* point) const 
 
 
 
-void PointManager::extractCoordinates(const QString& coordinates, Point* point) const {
-	QStringList tokens = coordinates.split(" ");
+void PointManager::extractCoordinates(const QString& data, Point* point) const {
+	QStringList tokens = data.split(" ");
 
 	for (int i = 0; i < tokens.length(); i++) {
 		if (tokens.at(i).contains("x", Qt::CaseInsensitive)) {
@@ -201,6 +248,30 @@ void PointManager::extractCoordinates(const QString& coordinates, Point* point) 
 			point->setZ(tokens.at(i).toDouble());
 			i = i + 2;
 			point->setSigmaZ(tokens.at(i).toDouble());
+		}
+	}
+}
+
+
+
+void PointManager::extractNEU(const QString& data, Point* point) const {
+	QStringList tokens = data.split(" ");
+	for (int i = 0; i < tokens.length(); i++) {
+		if (tokens.at(i).contains("dN", Qt::CaseInsensitive)) {
+			i = i + 2;
+			point->setNorth(tokens.at(i).toDouble());
+			i = i + 2;
+			point->setSigmaNorth(tokens.at(i).toDouble());
+		} else if (tokens.at(i).contains("dE", Qt::CaseInsensitive)) {
+			i = i + 2;
+			point->setEast(tokens.at(i).toDouble());
+			i = i + 2;
+			point->setSigmaEast(tokens.at(i).toDouble());
+		} else if (tokens.at(i).contains("dU", Qt::CaseInsensitive)) {
+			i = i + 2;
+			point->setUp(tokens.at(i).toDouble());
+			i = i + 2;
+			point->setSigmaUp(tokens.at(i).toDouble());
 		}
 	}
 }

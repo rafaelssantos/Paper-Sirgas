@@ -26,7 +26,20 @@ public:
 
 	std::string label() const;
 
+	std::string jsonDir() const;
 
+
+	double threasholdN() const;
+
+	void setThreasholdN(double threasholdN);
+
+	double threasholdE() const;
+
+	void setThreasholdE(double threasholdE);
+
+	double threasholdU() const;
+
+	void setThreasholdU(double threasholdU);
 
 private:
 	Settings();
@@ -39,8 +52,16 @@ private:
 
 	std::string m_settingsFilePath;
 
+	std::string m_jsonDir;
 	std::string m_groundTruthDir;
 	std::string m_streamDir;
+
+	double m_threasholdN;
+	double m_threasholdE;
+	double m_threasholdU;
+
+
+	void extractThresholds(std::string threshold);
 };
 
 

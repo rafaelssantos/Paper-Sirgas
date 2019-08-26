@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <vector>
 #include "settings.h"
 #include "inspector.h"
 #include "point.h"
@@ -30,6 +31,7 @@ void checkNumberOfParams(int argc) {
 
 int main(int argc, char* argv[]) {
 	QCoreApplication app(argc, argv);
+	vector<Point*> points;
 
 	if (Settings::instance().load(argc, argv) != ErrorCode::SUCCESS || Settings::instance().grabFilePaths() != ErrorCode::SUCCESS){
 		exit(1);
@@ -39,7 +41,6 @@ int main(int argc, char* argv[]) {
 
 	for(auto i = 0; i < filesCount; i++){
 		Point* groundTruth = PointManager::instance().loadPoint(Settings::instance().groundTruthPaths(i));
-		Point* groundTruthCurTime = PointManager::instance().loadPoint(Settings::instance().groundTruthPaths(i));
 
 		ifstream ifs(Settings::instance().streamPaths(i));
 
@@ -49,14 +50,11 @@ int main(int argc, char* argv[]) {
 			while (filesCount <= Settings::instance().filesCount()) {
 				while (getline(ifs, line)) {
 					if (Inspector::instance().hasCoordinates(line, groundTruth->label())) {
-						Point* stream = PointManager::instance().extract(line);
-						PointManager::instance().updateRefEpoch(*stream, groundTruthCurTime);
+						Point* p = PointManager::instance().extract(line);
+						p->setLatitude(groundTruth->latitude());
+						p->setLongitude(groundTruth->longitude());
 
-						cout << groundTruth->toString() << " GROUND TRUTH\n";
-						cout << groundTruthCurTime->toString() << " GROUND TRUTH CUR TIME\n";
-						cout << stream->toString() << " PPP POINT\n\n";
-
-						delete stream;
+						points.emplace_back(p);
 					}
 				}
 				Settings::instance().grabFilePaths();
@@ -65,14 +63,12 @@ int main(int argc, char* argv[]) {
 					break;
 				}
 				else{
+					PointManager::instance().exportToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 0.05, 0.05, 0.10);
 					this_thread::sleep_for(chrono::seconds(5));
 				}
 			}
 			ifs.close();
 		}
-
-		delete groundTruthCurTime;
-		groundTruthCurTime = nullptr;
 
 		delete groundTruth;
 		groundTruth = nullptr;

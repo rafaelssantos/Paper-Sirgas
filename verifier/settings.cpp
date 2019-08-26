@@ -39,15 +39,23 @@ ErrorCode Settings::load(int argc, char* argv[]) {
 		}
 		std::ifstream input(m_settingsFilePath);
 
+		string thresholds;
 		if(input.is_open()){
 			getline(input, m_label);
+			getline(input, thresholds);
+
+			extractThresholds(thresholds);
+
 			getline(input, m_groundTruthDir);
 			getline(input, m_streamDir);
+			getline(input, m_jsonDir);
 
 			input.close();
 
 			return ErrorCode::SUCCESS;
 		}
+
+
 
 		return ErrorCode::ERR_SETTINGS_FILE;
 	}
@@ -68,6 +76,49 @@ Settings::Settings() {
 Settings::~Settings() {
 }
 
+double Settings::threasholdU() const
+{
+	return m_threasholdU;
+}
+
+void Settings::setThreasholdU(double threasholdU)
+{
+	m_threasholdU = threasholdU;
+}
+
+double Settings::threasholdE() const
+{
+	return m_threasholdE;
+}
+
+void Settings::setThreasholdE(double threasholdE)
+{
+	m_threasholdE = threasholdE;
+}
+
+double Settings::threasholdN() const
+{
+	return m_threasholdN;
+}
+
+void Settings::setThreasholdN(double threasholdN)
+{
+	m_threasholdN = threasholdN;
+}
+
+
+
+void Settings::extractThresholds(std::string threshold){
+	QString qThreshold (threshold.c_str());
+
+	QStringList list = qThreshold.split(" ");
+
+	m_threasholdN = list.at(0).toDouble();
+	m_threasholdE = list.at(1).toDouble();
+	m_threasholdU = list.at(2).toDouble();
+}
+
+
 
 
 
@@ -81,6 +132,14 @@ int Settings::filesCount() const {
 
 string Settings::label() const {
 	return m_label;
+}
+
+
+
+
+
+string Settings::jsonDir() const {
+	return m_jsonDir;
 }
 
 

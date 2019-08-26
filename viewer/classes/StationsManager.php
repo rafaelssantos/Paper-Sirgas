@@ -11,12 +11,12 @@ class StationsManager {
 
 
 
-	public function getStations(){
-		if(!isset($stations)){
-			$stations = $this->loadDefault();
-		}
+	public function getDefaultStations(){
+		return $this->loadDefault();
+	}
 
-		return $stations;
+	public function getJsonData($file_path){
+		return $this->loadFromJson($file_path);
 	}
 
 
@@ -61,6 +61,9 @@ class StationsManager {
 
 
 	public function loadFromJson($filePathJson){
+		$json_data = file_get_contents($filePathJson);
+
+		return (array) json_decode($json_data, true);
 	}	
 
 

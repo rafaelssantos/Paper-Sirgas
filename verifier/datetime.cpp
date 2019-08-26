@@ -73,9 +73,9 @@ std::string DateTime::toString() const {
 	min = string(2 - min.length(), '0') + min;
 	sec = string(2 - sec.length(), '0') + sec;
 
-	string output = "(";
-	output += to_string(m_tm->tm_year) + "-" + month + "-" + day + ", ";
-	output += hour + ":" + min + ":" + sec + ")";
+	string output = "";
+	output += to_string(m_tm->tm_year) + "-" + month + "-" + day + " ";
+	output += hour + ":" + min + ":" + sec;
 
 	return output;
 }

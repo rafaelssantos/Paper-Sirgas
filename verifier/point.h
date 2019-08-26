@@ -15,8 +15,9 @@ public:
 
 	Point(double x, double y, double z, std::string label);
 
-	Point(const Point &point);
+	Point(double x, double y, double z, std::string label, double north, double east, double up);
 
+	Point(const Point &point);
 
 	virtual ~Point();
 
@@ -64,19 +65,63 @@ public:
 
 	void setSigmaZ(double sigmaZ);
 
+	double latitude() const;
+
+	void setLatitude(double latitude);
+
+	double longitude() const;
+
+	void setLongitude(double longitude);
+
+	double north() const;
+
+	void setNorth(double north);
+
+	double east() const;
+
+	void setEast(double east);
+
+	double up() const;
+
+	void setUp(double up);
+
+	double sigmaNorth() const;
+
+	void setSigmaNorth(double sigmaNorth);
+
+	double sigmaEast() const;
+
+	void setSigmaEast(double sigmaEast);
+
+	double sigmaUp() const;
+
+	void setSigmaUp(double sigmaUp);
+
 
 
 private:
 	double m_x;
 	double m_y;
 	double m_z;
-	double m_velocX;
-	double m_velocY;
-	double m_velocZ;
 
 	double m_sigmaX;
 	double m_sigmaY;
 	double m_sigmaZ;
+
+	double m_velocX;
+	double m_velocY;
+	double m_velocZ;
+
+	double m_north;
+	double m_east;
+	double m_up;
+
+	double m_sigmaNorth;
+	double m_sigmaEast;
+	double m_sigmaUp;
+
+	double m_latitude;
+	double m_longitude;
 
 	std::string m_label;
 	DateTime* m_datetime;

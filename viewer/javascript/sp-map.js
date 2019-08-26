@@ -50,14 +50,14 @@ function updateMap(map){
 
             // Listando cada cliente encontrado na lista...
             $.each(stations, function(i, station){
-                if(station.status === true){
-                    L.marker([station.lat, station.long], {icon: suitableStIcon}).bindPopup(station.name).addTo(layer);
+                last_epoch = station[station.length - 1];
+                if(last_epoch.status === 1){
+                    L.marker([last_epoch.lat, last_epoch.long], {icon: suitableStIcon}).bindPopup(last_epoch.label).addTo(layer);
                 }
                 else{
-                    L.marker([station.lat, station.long], {icon: notSuitableStIcon}).bindPopup(station.name).addTo(layer);
+                    L.marker([last_epoch.lat, last_epoch.long], {icon: notSuitableStIcon}).bindPopup(last_epoch.label).addTo(layer);
                 }
             });
-            console.log("OK");
 
             setTimeout(function(){
                 layer.remove();
