@@ -16,12 +16,18 @@
         <!-- sp-map js -->
         <link rel="stylesheet" href="css/sp-map.css">
 		
-
         <!-- jquery 3.4.1 -->
         <script src="javascript/jquery/jquery-3.4.1.min.js"></script>
 
         <!-- leaflet js -->
         <script src="javascript/lib/leaflet.js"></script>
+    
+        <!-- Load c3.css -->
+        <link href="javascript/lib/c3-0.7.8/c3.min.css " rel="stylesheet">
+
+        <!-- Load d3.js and c3.js -->
+        <script src="javascript/lib/d3-5.11.0/d3.min.js" charset="utf-8"></script>
+        <script src="javascript/lib/c3-0.7.8/c3.min.js"></script>
     </head>
     
 
@@ -71,6 +77,27 @@
                 Status: OK <br>
             </div>
         </div>
+
+        <div id="chart" style="width: 100%; height: 400px"></div>
+        <script>
+            var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+      columns: [
+        ['data1', 30, 200, 100, 400, 150, 250],
+        ['data2', 50, 20, 10, 40, 15, 25]
+      ],
+      axes: {
+        data2: 'y2' // ADD
+      }
+    },
+    axis: {
+      y2: {
+        show: true // ADD
+      }
+    }
+});
+        </script>
          
         <!-- sp-map js -->
         <script src="javascript/sp-map.js"></script>
