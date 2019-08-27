@@ -18,6 +18,10 @@ public:
 
 	std::string toString() const;
 
+	std::string timeToString() const;
+
+	std::string dateToString() const;
+
 	int year() const;
 
 	void setYear(int year);

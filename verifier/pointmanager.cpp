@@ -2,6 +2,7 @@
 
 
 #include <QStringList>
+#include <cmath>
 #include <cstring>
 #include <ctime>
 #include <fstream>
@@ -151,35 +152,29 @@ void PointManager::exportToJsonFile(string dirPath, string label, const vector<P
 	string jsonString = "[\n";
 	if(ofs.is_open()){
 		size_t count = 0;
-		for(auto point = points.begin(); point != points.end(); point++){
-//			jsonSring += "\"" + (*point)->dateTime()->toString() + "\" : {";
+
+		for(auto i = max(static_cast<int>(points.size() - 300), 0); i < points.size(); i++){
 			jsonString += "{";
 
-			jsonString += "\"label\":\"" + (*point)->label() + "\", ";
+			jsonString += "\"label\":\"" + points[i]->label() + "\", ";
 
-			jsonString += "\"lat\":\"" + to_string((*point)->latitude()) + "\", ";
-			jsonString += "\"long\":\"" + to_string((*point)->longitude()) + "\", ";
+			jsonString += "\"lat\":\"" + to_string(points[i]->latitude()) + "\", ";
+			jsonString += "\"long\":\"" + to_string(points[i]->longitude()) + "\", ";
 
-			jsonString += "\"year\":\"" + to_string((*point)->dateTime()->year()) + "\", ";
-			jsonString += "\"month\":\"" + to_string((*point)->dateTime()->month()) + "\", ";
-			jsonString += "\"day\":\"" + to_string((*point)->dateTime()->day()) + "\", ";
-			jsonString += "\"hour\":\"" + to_string((*point)->dateTime()->hour()) + "\", ";
-			jsonString += "\"min\":\"" + to_string((*point)->dateTime()->min()) + "\", ";
-			jsonString += "\"sec\":\"" + to_string((*point)->dateTime()->sec()) + "\", ";
+			jsonString += "\"datetime\":\"" + points[i]->dateTime()->dateToString() + " " + points[i]->dateTime()->timeToString() + "\", ";
 
+			jsonString += "\"north\":\"" + to_string(points[i]->north()) + "\", ";
+			jsonString += "\"east\":\"" + to_string(points[i]->east()) + "\", ";
+			jsonString += "\"up\":\"" + to_string(points[i]->up()) + "\", ";
 
-			jsonString += "\"north\":\"" + to_string((*point)->north()) + "\", ";
-			jsonString += "\"east\":\"" + to_string((*point)->east()) + "\", ";
-			jsonString += "\"up\":\"" + to_string((*point)->up()) + "\", ";
+			jsonString += "\"sigmaNorth\":\"" + to_string(points[i]->sigmaNorth()) + "\", ";
+			jsonString += "\"sigmaEast\":\"" + to_string(points[i]->sigmaEast()) + "\", ";
+			jsonString += "\"sigmaUp\":\"" + to_string(points[i]->sigmaUp()) + "\", ";
 
-			jsonString += "\"sigmaNorth\":\"" + to_string((*point)->sigmaNorth()) + "\", ";
-			jsonString += "\"sigmaEast\":\"" + to_string((*point)->sigmaEast()) + "\", ";
-			jsonString += "\"sigmaUp\":\"" + to_string((*point)->sigmaUp()) + "\", ";
-
-			jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(**point, thresholdNorth, threasholdEast, threasholdUp)) + "\"";
+			jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(*points[i], thresholdNorth, threasholdEast, threasholdUp)) + "\"";
 
 			count++;
-			if(count != points.size()){
+			if(count != points.size() && count != 300){
 				jsonString += "},\n";
 			}
 			else{

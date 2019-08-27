@@ -81,6 +81,35 @@ std::string DateTime::toString() const {
 }
 
 
+string DateTime::timeToString() const {
+	string hour = to_string(m_tm->tm_hour);
+	string min = to_string(m_tm->tm_min);
+	string sec = to_string(m_tm->tm_sec);
+
+	hour = string(2 - hour.length(), '0') + hour;
+	min = string(2 - min.length(), '0') + min;
+	sec = string(2 - sec.length(), '0') + sec;
+
+	string output = hour + ":" + min + ":" + sec;
+
+	return output;
+}
+
+string DateTime::dateToString() const {
+	string month = to_string(m_tm->tm_mon);
+	string day = to_string(m_tm->tm_mday);
+
+	month = string(2 - month.length(), '0') + month;
+	day = string(2 - day.length(), '0') + day;
+
+
+	string output = to_string(m_tm->tm_year) + "-" + month + "-" + day;
+
+
+	return output;
+}
+
+
 
 
 
