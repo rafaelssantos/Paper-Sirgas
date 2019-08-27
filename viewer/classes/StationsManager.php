@@ -60,18 +60,11 @@ class StationsManager {
 
 
 
-	public function loadFromJson($filePathJson){
+	private function loadFromJson($filePathJson){
 		$json_data = file_get_contents($filePathJson);
 
 		return (array) json_decode($json_data, true);
 	}	
-
-
-
-
-	public function updateStatus($statusFilePath) {
-	}
-
 
 
     private function __construct() {

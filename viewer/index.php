@@ -81,23 +81,27 @@
         <div id="chart" style="width: 100%; height: 400px"></div>
         <script>
             var chart = c3.generate({
-    bindto: '#chart',
-    data: {
-      columns: [
-        ['data1', 30, 200, 100, 400, 150, 250],
-        ['data2', 50, 20, 10, 40, 15, 25]
-      ],
-      axes: {
-        data2: 'y2' // ADD
-      }
-    },
-    axis: {
-      y2: {
-        show: true // ADD
-      }
-    }
-});
-        </script>
+            data: {
+                x: 'x',
+                   xFormat: '%Y-%m-%d %H:%M:%S', // 'xFormat' can be used as custom format of 'x'
+                columns: [
+                    ['x', '2013-01-01 16:00:00', '2013-01-02 16:00:01', '2013-01-03 16:00:02', '2013-01-04 16:00:03', '2013-01-05 16:00:04', '2013-01-06 16:00:05'],
+            //            ['x', '20130101', '20130102', '20130103', '20130104', '20130105', '20130106'],
+                    ['North', 0.2, 0.4, 0.3, 0.9, -0.8, 0.5],
+                    ['East', 0.9, 0.5, -0.1, 0.5, -0.4, 0.3],
+                    ['Up', 0.19, 0.52, -0.31, 0.52, -0.14, 0.13]
+                ]
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%Y-%m-%d %H:%M:%S'
+                    }
+                }
+            }
+            });
+                </script>
          
         <!-- sp-map js -->
         <script src="javascript/sp-map.js"></script>
