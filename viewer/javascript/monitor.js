@@ -1,25 +1,40 @@
-function updateChart(jsonData){
-     var chart = c3.generate({
-        bindto: "#neu-chart",
-        data: {
-            json: jsonData,
-            keys: {
-                x: 'datetime', // it's possible to specify 'x' when category axis
-                value: ['north', 'east', 'up']
-            }
-        },
-        axis: {
-            x: {
-                type: 'category',
-                tick: {
-                    fit: false,
-                    rotate: -45,
-                    multiline: false
+function updateChart(){
+
+    $.ajax({
+        type: "POST", 
+        url: 'serv-retrive-neu.php',
+        async: 'false',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        cache: false,
+        success: function(neuData) {
+            var parsedNeuData = JSON.parse(neuData);
+
+            var chart = c3.generate({
+                bindto: "#neu-chart",
+                data: {
+                    json: parsedNeuData[localStorage['stationLabel']],
+                    keys: {
+                        x: 'datetime', // it's possible to specify 'x' when category axis
+                        value: ['north', 'east', 'up']
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        tick: {
+                            fit: false,
+                            rotate: -45,
+                            multiline: false
+                        }
+                    }
                 }
-            }
+            });
         }
     });
+
 }
+
 
 
 
@@ -41,8 +56,8 @@ function updateMap(){
         L.control.scale().addTo(window.map);
     }
 
-    var layer = L.layerGroup();
-    layer.addTo(window.map);
+    window.layer = L.layerGroup();
+    window.layer.addTo(window.map);
 
     var CustomIcon = L.Icon.extend({});
     // var suitableStIcon = new CustomIcon({iconUrl: 'images/marker-suitable.png'});
@@ -62,48 +77,24 @@ function updateMap(){
     });
 
 
-    $.ajax({
-        type: "POST", 
-        url: 'retrieve-stations.php',
-        async: 'false',
-        datatype: 'json',
-        contentType: "application/json; charset=utf-8",
-        cache: false,
-        success: function(data) {
-            var stations = JSON.parse(data);
-
-            // Listando cada cliente encontrado na lista...
-
-            updateChart(stations[localStorage['stationLabel']]);
-
-
-            $.each(stations, function(key, station){
-                last_epoch = station[station.length - 1];
-                if(last_epoch.status === 1){
-                    L.marker([last_epoch.lat, last_epoch.long], {icon: suitableStIcon}).bindPopup(key).addTo(layer);
-                }
-                else{
-                    L.marker([last_epoch.lat, last_epoch.long], {icon: notSuitableStIcon}).bindPopup(key).addTo(layer);
-                }
-            });
-
-            // if(stations[localStorage['stationLabel']] != undefined){
-            //     generateChart("#neu-chart", stations[localStorage['stationLabel']]);
-            // }
-            // else{
-            //     console.log("Data unavailable");
-            // }
-
-           
-        },
-        complete: function(data){
-            window.timer = setTimeout(function(){
-                layer.remove();
-                updateMap();
-            }, 5000);
-        }
-    });
+    
 }
+
+
+function refresh(){
+    // updateMap();
+    updateChart();
+
+
+    window.timer = setTimeout(function(){
+        if(window.layer != undefined){
+            window.layer.remove();
+        }
+     // updateMap();
+        updateChart();
+    }, 5000);
+}
+
 
 
 
@@ -117,8 +108,8 @@ $(document).ready(function(){
     $("#cbStation").change(function(){
         localStorage['stationLabel'] = $(this).children("option:selected").val();
         clearTimeout(window.timer);
-        updateMap();
+        refresh();
     });
 
-    updateMap();
+    refresh();
 });

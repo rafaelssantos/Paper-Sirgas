@@ -41,6 +41,7 @@ int main(int argc, char* argv[]) {
 
 	for(auto i = 0; i < filesCount; i++){
 		Point* groundTruth = PointManager::instance().loadPoint(Settings::instance().groundTruthPaths(i));
+		Point* point = nullptr;
 
 		ifstream ifs(Settings::instance().streamPaths(i));
 
@@ -50,11 +51,11 @@ int main(int argc, char* argv[]) {
 			while (filesCount <= Settings::instance().filesCount()) {
 				while (getline(ifs, line)) {
 					if (Inspector::instance().hasCoordinates(line, groundTruth->label())) {
-						Point* p = PointManager::instance().extract(line);
-						p->setLatitude(groundTruth->latitude());
-						p->setLongitude(groundTruth->longitude());
+						point = PointManager::instance().extract(line);
+						point->setLatitude(groundTruth->latitude());
+						point->setLongitude(groundTruth->longitude());
 
-						points.emplace_back(p);
+						points.emplace_back(point);
 					}
 				}
 				Settings::instance().grabFilePaths();
@@ -63,7 +64,8 @@ int main(int argc, char* argv[]) {
 					break;
 				}
 				else{
-					PointManager::instance().exportToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 0.05, 0.05, 0.10);
+					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 300, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
+					PointManager::instance().exportLastCheckToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), *point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
 					this_thread::sleep_for(chrono::seconds(5));
 				}
 			}

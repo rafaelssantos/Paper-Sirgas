@@ -146,35 +146,35 @@ bool PointManager::checkIntegrityNEU(const Point& point, double thresholdNorth, 
 
 
 
-void PointManager::exportToJsonFile(string dirPath, string label, const vector<Point*> &points, double thresholdNorth, double threasholdEast, double threasholdUp) const {
+void PointManager::exportSeriesToJsonFile(string dirPath, string label, const vector<Point*> &points, int count, double thresholdNorth, double threasholdEast, double threasholdUp) const {
 	ofstream ofs(dirPath + "/" + label + ".json");
 
 	string jsonString = "[\n";
 	if(ofs.is_open()){
-		size_t count = 0;
+		size_t n = 0;
 
-		for(auto i = max(static_cast<int>(points.size() - 300), 0); i < points.size(); i++){
+		for(auto i = max(static_cast<int>(points.size() - count), 0); i < points.size(); i++){
 			jsonString += "{";
 
-//			jsonString += "\"label\":\"" + points[i]->label() + "\", ";
+			//			jsonString += "\"label\":\"" + points[i]->label() + "\", ";
 
-			jsonString += "\"lat\":\"" + to_string(points[i]->latitude()) + "\", ";
-			jsonString += "\"long\":\"" + to_string(points[i]->longitude()) + "\", ";
+			//			jsonString += "\"lat\":\"" + to_string(points[i]->latitude()) + "\", ";
+			//			jsonString += "\"long\":\"" + to_string(points[i]->longitude()) + "\", ";
 
 			jsonString += "\"datetime\":\"" + points[i]->dateTime()->dateToString() + " " + points[i]->dateTime()->timeToString() + "\", ";
 
 			jsonString += "\"north\":\"" + to_string(points[i]->north()) + "\", ";
 			jsonString += "\"east\":\"" + to_string(points[i]->east()) + "\", ";
-			jsonString += "\"up\":\"" + to_string(points[i]->up()) + "\", ";
+			jsonString += "\"up\":\"" + to_string(points[i]->up()) + "\"";
 
-			jsonString += "\"sigmaNorth\":\"" + to_string(points[i]->sigmaNorth()) + "\", ";
-			jsonString += "\"sigmaEast\":\"" + to_string(points[i]->sigmaEast()) + "\", ";
-			jsonString += "\"sigmaUp\":\"" + to_string(points[i]->sigmaUp()) + "\", ";
+			//			jsonString += "\"sigmaNorth\":\"" + to_string(points[i]->sigmaNorth()) + "\", ";
+			//			jsonString += "\"sigmaEast\":\"" + to_string(points[i]->sigmaEast()) + "\", ";
+			//			jsonString += "\"sigmaUp\":\"" + to_string(points[i]->sigmaUp()) + "\", ";
 
-			jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(*points[i], thresholdNorth, threasholdEast, threasholdUp)) + "\"";
+			//			jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(*points[i], thresholdNorth, threasholdEast, threasholdUp)) + "\"";
 
-			count++;
-			if(count != points.size() && count != 300){
+			n++;
+			if(n != points.size() && n != count){
 				jsonString += "},\n";
 			}
 			else{
@@ -188,6 +188,28 @@ void PointManager::exportToJsonFile(string dirPath, string label, const vector<P
 		ofs.close();
 	}
 
+}
+
+
+
+
+void PointManager::exportLastCheckToJsonFile(string dirPath, string label, const Point& point, double thresholdNorth, double threasholdEast, double threasholdUp) const {
+	ofstream ofs(dirPath + "/LAST_" + label + ".json");
+
+	string jsonString = "{\n";
+	if(ofs.is_open()){
+		jsonString += "\"datetime\":\"" + point.dateTime()->dateToString() + " " + point.dateTime()->timeToString() + "\", ";
+
+		jsonString += "\"north\":\"" + to_string(point.north()) + "\", ";
+		jsonString += "\"east\":\"" + to_string(point.east()) + "\", ";
+		jsonString += "\"up\":\"" + to_string(point.up()) + "\", ";
+
+		jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(point, thresholdNorth, threasholdEast, threasholdUp)) + "\"";
+		jsonString += "}";
+
+		ofs << jsonString;
+		ofs.close();
+	}
 }
 
 
