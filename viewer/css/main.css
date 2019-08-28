@@ -1,0 +1,89 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+
+
+
+
+.header{
+	height: 3rem;
+	width: 100%;
+	display: inline-block;
+}
+
+
+
+
+
+.header .logo{
+	float: right;
+	height: 2rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+
+
+
+
+.split-container {
+	width: 100%;
+	height: calc(50% - 3.5rem);
+	display: flex;
+	flex-direction: row;
+}
+
+
+
+
+
+.split-container .left {
+	display: flex;
+	height: calc(100% - 0.5rem);
+	width: calc(50% - 0.5rem);
+	margin: 0.25rem;
+}
+
+
+
+
+
+.split-container .right {
+	background-color: yellow;
+	display: flex;
+	height: calc(100% - 0.5rem);
+	width: calc(50% - 0.5rem);
+	margin: 0.25rem;
+}
+
+
+
+
+
+.chart-container {
+	height: calc(50% - 0.5rem);
+	width: calc(100% - 0.5rem);
+	margin: 0.25rem;
+	display: block;
+	float: left;
+}
+
+
+.chart-container .toolbar select {
+	height: 2rem;
+}
+
+
+#stations-map {
+	width: 100%;
+	height: 100%;
+}
+
+
+#neu-chart {
+	width: 100%;
+	height: calc(100% - 2rem);
+	display: block;
+}

@@ -1,25 +1,28 @@
-function generateChart(divId, jsonData){
+function generateChart(elemId, jsonData){
+    console.log(jsonData);
     chart = c3.generate({
-        bindTo: '${divId}',
+        bindTo: '${elemId}',
         data: {
             json: jsonData,
             keys: {
                 x: 'datetime', // it's possible to specify 'x' when category axis
                 value: ['north', 'east', 'up'],
             }
-        },
-        axis: {
-            x: {
-                type: 'categories',
-                tick: {
-                    fit: false,
-                    rotate: -45,
-                    multiline: false
-                },
-            }
         }
+        // },
+        // axis: {
+        //     x: {
+        //         type: 'categories',
+        //         tick: {
+        //             fit: false,
+        //             rotate: -45,
+        //             multiline: false
+        //         },
+        //     }
+        // }
     });
 }
+
 
 
 
@@ -29,7 +32,7 @@ function updateMap(map){
     var longSP = -49.0615;      //longitude centro de SP (Bauru)
 
     if(map === null){
-        map = L.map('sirgas-map').setView([latSP, longSP], 6.75);
+        map = L.map('stations-map').setView([latSP, longSP], 6.75);
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 18,
@@ -74,8 +77,16 @@ function updateMap(map){
             var stations = JSON.parse(data);
 
             // Listando cada cliente encontrado na lista...
+
+            if(stations[localStorage['stationLabel']] != undefined){
+                generateChart("#neu-chart", stations[localStorage['stationLabel']]);
+            }
+            else{
+                console.log("Data unavailable");
+            }
+
             $.each(stations, function(i, station){
-                generateChart("#chart", station);
+                
                 last_epoch = station[station.length - 1];
                 if(last_epoch.status === 1){
                     L.marker([last_epoch.lat, last_epoch.long], {icon: suitableStIcon}).bindPopup(last_epoch.label).addTo(layer);
@@ -85,17 +96,37 @@ function updateMap(map){
                 }
             });
 
+    
+
+
             setTimeout(function(){
                 layer.remove();
                 updateMap(map);
-            }, 2000);
+            }, 5000);
         } 
     });
 }
 
 
 
+$(document).ready(function(){
+    if(localStorage['stationLabel'] == undefined){
+        localStorage['stationLabel'] = "PPTE0";
+    }
 
-$(function () {
+    $("#cbStation").val(localStorage['stationLabel']);
+
+    $("#cbStation").change(function(){
+        localStorage['stationLabel'] = $(this).children("option:selected").val();
+    });
+
     updateMap(null);
+
 });
+
+
+
+
+// $(function () {
+//     updateMap(null);
+// });
