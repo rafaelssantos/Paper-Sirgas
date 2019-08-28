@@ -2,18 +2,18 @@ function updateChart(){
 
     $.ajax({
         type: "POST", 
-        url: 'serv-retrive-neu.php',
+        url: 'serv-retrive-neu-series.php',
         async: 'false',
         datatype: 'json',
         contentType: "application/json; charset=utf-8",
         cache: false,
-        success: function(neuData) {
-            var parsedNeuData = JSON.parse(neuData);
+        success: function(data) {
+            var stations = JSON.parse(data);
 
             var chart = c3.generate({
                 bindto: "#neu-chart",
                 data: {
-                    json: parsedNeuData[localStorage['stationLabel']],
+                    json: stations[localStorage['stationLabel']],
                     keys: {
                         x: 'datetime', // it's possible to specify 'x' when category axis
                         value: ['north', 'east', 'up']
@@ -32,7 +32,6 @@ function updateChart(){
             });
         }
     });
-
 }
 
 
@@ -41,8 +40,8 @@ function updateChart(){
 
 function updateMap(){
     /* Coordenadas centrais do estado de SP */
-    var latSP = -22.3154;               //latitude centro de SP (Bauru)
-    var longSP = -49.0615;      //longitude centro de SP (Bauru)
+    var latSP = -21.5;               //latitude centro de SP (Bauru)
+    var longSP = -51;      //longitude centro de SP (Bauru)
 
     if(window.map == undefined){
         window.map = L.map('stations-map').setView([latSP, longSP], 6.75);
@@ -77,12 +76,31 @@ function updateMap(){
     });
 
 
-    
+    $.ajax({
+        type: "POST", 
+        url: 'serv-retrive-neu-last.php',
+        async: 'false',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        cache: false,
+        success: function(data) {
+            var stations = JSON.parse(data);
+
+            $.each(stations, function(key, station){
+                if(station.status == 1){
+                    L.marker([station.lat, station.long], {icon: suitableStIcon}).bindPopup(key).addTo(window.layer);
+                }
+                else{
+                    L.marker([station.lat, station.long], {icon: notSuitableStIcon}).bindPopup(key).addTo(window.layer);
+                }
+            });
+        }
+    });
 }
 
 
 function refresh(){
-    // updateMap();
+    updateMap();
     updateChart();
 
 
@@ -90,8 +108,8 @@ function refresh(){
         if(window.layer != undefined){
             window.layer.remove();
         }
-     // updateMap();
-        updateChart();
+        
+        refresh();
     }, 5000);
 }
 

@@ -199,7 +199,8 @@ void PointManager::exportLastCheckToJsonFile(string dirPath, string label, const
 	string jsonString = "{\n";
 	if(ofs.is_open()){
 		jsonString += "\"datetime\":\"" + point.dateTime()->dateToString() + " " + point.dateTime()->timeToString() + "\", ";
-
+		jsonString += "\"lat\":\"" + to_string(point.latitude()) + "\", ";
+		jsonString += "\"long\":\"" + to_string(point.longitude()) + "\", ";
 		jsonString += "\"north\":\"" + to_string(point.north()) + "\", ";
 		jsonString += "\"east\":\"" + to_string(point.east()) + "\", ";
 		jsonString += "\"up\":\"" + to_string(point.up()) + "\", ";
