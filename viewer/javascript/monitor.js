@@ -4,8 +4,18 @@ function updateChart(jsonData){
         data: {
             json: jsonData,
             keys: {
-//                x: 'name', // it's possible to specify 'x' when category axis
+                x: 'datetime', // it's possible to specify 'x' when category axis
                 value: ['north', 'east', 'up']
+            }
+        },
+        axis: {
+            x: {
+                type: 'category',
+                tick: {
+                    fit: false,
+                    rotate: -45,
+                    multiline: false
+                }
             }
         }
     });
