@@ -1,53 +1,21 @@
-function generateChart(elemId, jsonData){
-    // console.log(jsonData);
-    var chart = c3.generate({
-        bindto: elemId,
+function updateChart(jsonData){
+    console.log(jsonData);
+     var chart = c3.generate({
+        bindto: "#neu-chart",
         data: {
-          columns: [
-            ['data1', 30, 200, 100, 400, 150, 250],
-            ['data2', 50, 20, 10, 40, 15, 25]
-          ]
+            json: jsonData,
+            keys: {
+//                x: 'name', // it's possible to specify 'x' when category axis
+                value: ['north', 'east', 'up']
+            }
         }
     });
-
-    // var chart = c3.generate({
-    //     bindTo: elemId,
-    //     data: {
-    //         json: {
-    //             data1: [30, 20, 50, 40, 60, 50],
-    //             data2: [200, 130, 90, 240, 130, 220],
-    //             data3: [300, 200, 160, 400, 250, 250]
-    //         }
-    //     }
-    // });
-    // var chart = c3.generate({
-    //     bindTo: elemId,
-    //     data: {
-    //         json: jsonData,
-    //         keys: {
-    //             // x: 'datetime', // it's possible to specify 'x' when category axis
-    //             value: ['north', 'east', 'up']
-    //         }
-    //     // },
-    // //     axis: {
-    // //         x: {
-    // //             type: 'category',
-    // //             tick: {
-    // //                 fit: false,
-    // //                 rotate: -45,
-    // //                 multiline: false
-    // //             },
-    // //         }
-    //     }
-    // });
-
-    console.log(chart);
 }
 
 
 
 
-function updateMap(map){
+function updateMap(map, chart){
     /* Coordenadas centrais do estado de SP */
     var latSP = -22.3154;               //latitude centro de SP (Bauru)
     var longSP = -49.0615;      //longitude centro de SP (Bauru)
@@ -85,20 +53,20 @@ function updateMap(map){
     });
 
 
-
-
     $.ajax({
         type: "POST", 
         url: 'retrieve-stations.php',
-        timeout: 5000,
+        async: 'false',
         datatype: 'json',
-        async: "true",
         contentType: "application/json; charset=utf-8",
         cache: false,
         success: function(data) {
             var stations = JSON.parse(data);
 
             // Listando cada cliente encontrado na lista...
+
+            updateChart(stations[localStorage['stationLabel']]);
+
 
             $.each(stations, function(key, station){
                 last_epoch = station[station.length - 1];
@@ -110,18 +78,21 @@ function updateMap(map){
                 }
             });
 
-            if(stations[localStorage['stationLabel']] != undefined){
-                generateChart("#neu-chart", stations[localStorage['stationLabel']]);
-            }
-            else{
-                console.log("Data unavailable");
-            }
+            // if(stations[localStorage['stationLabel']] != undefined){
+            //     generateChart("#neu-chart", stations[localStorage['stationLabel']]);
+            // }
+            // else{
+            //     console.log("Data unavailable");
+            // }
 
+           
+        },
+        complete: function(data){
             setTimeout(function(){
                 layer.remove();
-                updateMap(map);
+                updateMap(map, chart);
             }, 5000);
-        } 
+        }
     });
 }
 
@@ -139,12 +110,4 @@ $(document).ready(function(){
     });
 
     updateMap(null);
-
 });
-
-
-
-
-// $(function () {
-//     updateMap(null);
-// });
