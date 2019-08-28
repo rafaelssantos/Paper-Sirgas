@@ -4,12 +4,11 @@
         <meta charset="utf-8">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Monitoring of GNSS-SP</title>
         
-
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="author" href="humans.txt">
-
+        <title>Integrity Monitoring</title>
+        
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/integrity.css">
 		<!-- leaftlet css -->
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
 
@@ -35,7 +34,17 @@
 
 
     <body>
-        <img class='logo-unesp' src="images/unesp.jpg">
+        <div class='header'>
+            <img class='logo' src="images/unesp.jpg">
+        </div>
+        <div class='split-container'>
+            <div class='left'>
+
+            </div>
+            <div class='right'>
+
+            </div>
+        </div>
     	<div id="sirgas-map"></div>
         <div class='spacer'></div>
 

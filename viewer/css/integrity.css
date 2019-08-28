@@ -1,0 +1,40 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+.header{
+	height: 4rem;
+	width: 100%;
+	display: inline-block;
+}
+
+
+.header .logo{
+	float: right;
+	height: 3rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.split-container {
+	width: 100%;
+	height: calc(100% - 20rem);
+	display: flex;
+	flex-direction: row;
+}
+
+
+.split-container .left {
+	background-color: red;
+	display: flex;
+	height: 100%;
+	width: 50%;
+}
+
+.split-container .right {
+	background-color: yellow;
+	display: flex;
+	height: 100%;
+	width: 50%;
+}
