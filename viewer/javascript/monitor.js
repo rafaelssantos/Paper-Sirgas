@@ -1,5 +1,4 @@
 function updateChart(jsonData){
-    console.log(jsonData);
      var chart = c3.generate({
         bindto: "#neu-chart",
         data: {
@@ -15,25 +14,25 @@ function updateChart(jsonData){
 
 
 
-function updateMap(map, chart){
+function updateMap(){
     /* Coordenadas centrais do estado de SP */
     var latSP = -22.3154;               //latitude centro de SP (Bauru)
     var longSP = -49.0615;      //longitude centro de SP (Bauru)
 
-    if(map === null){
-        map = L.map('stations-map').setView([latSP, longSP], 6.75);
+    if(window.map == undefined){
+        window.map = L.map('stations-map').setView([latSP, longSP], 6.75);
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 18,
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' + '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             id: 'mapbox.streets'
-        }).addTo(map);
+        }).addTo(window.map);
 
-        L.control.scale().addTo(map);
+        L.control.scale().addTo(window.map);
     }
 
     var layer = L.layerGroup();
-    layer.addTo(map);
+    layer.addTo(window.map);
 
     var CustomIcon = L.Icon.extend({});
     // var suitableStIcon = new CustomIcon({iconUrl: 'images/marker-suitable.png'});
@@ -88,9 +87,9 @@ function updateMap(map, chart){
            
         },
         complete: function(data){
-            setTimeout(function(){
+            window.timer = setTimeout(function(){
                 layer.remove();
-                updateMap(map, chart);
+                updateMap();
             }, 5000);
         }
     });
@@ -107,7 +106,9 @@ $(document).ready(function(){
 
     $("#cbStation").change(function(){
         localStorage['stationLabel'] = $(this).children("option:selected").val();
+        clearTimeout(window.timer);
+        updateMap();
     });
 
-    updateMap(null);
+    updateMap();
 });
