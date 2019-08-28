@@ -1,5 +1,4 @@
 function generateChart(elemId, jsonData){
-    console.log(jsonData);
     chart = c3.generate({
         bindTo: '${elemId}',
         data: {
@@ -8,18 +7,17 @@ function generateChart(elemId, jsonData){
                 x: 'datetime', // it's possible to specify 'x' when category axis
                 value: ['north', 'east', 'up'],
             }
+        },
+        axis: {
+            x: {
+                type: 'categories',
+                tick: {
+                    fit: false,
+                    rotate: -45,
+                    multiline: false
+                },
+            }
         }
-        // },
-        // axis: {
-        //     x: {
-        //         type: 'categories',
-        //         tick: {
-        //             fit: false,
-        //             rotate: -45,
-        //             multiline: false
-        //         },
-        //     }
-        // }
     });
 }
 
@@ -78,15 +76,7 @@ function updateMap(map){
 
             // Listando cada cliente encontrado na lista...
 
-            if(stations[localStorage['stationLabel']] != undefined){
-                generateChart("#neu-chart", stations[localStorage['stationLabel']]);
-            }
-            else{
-                console.log("Data unavailable");
-            }
-
             $.each(stations, function(i, station){
-                
                 last_epoch = station[station.length - 1];
                 if(last_epoch.status === 1){
                     L.marker([last_epoch.lat, last_epoch.long], {icon: suitableStIcon}).bindPopup(last_epoch.label).addTo(layer);
@@ -96,7 +86,12 @@ function updateMap(map){
                 }
             });
 
-    
+            if(stations[localStorage['stationLabel']] != undefined){
+                generateChart("neu-chart", stations[localStorage['stationLabel']]);
+            }
+            else{
+                console.log("Data unavailable");
+            }
 
 
             setTimeout(function(){
