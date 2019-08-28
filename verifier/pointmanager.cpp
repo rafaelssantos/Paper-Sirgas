@@ -156,7 +156,7 @@ void PointManager::exportToJsonFile(string dirPath, string label, const vector<P
 		for(auto i = max(static_cast<int>(points.size() - 300), 0); i < points.size(); i++){
 			jsonString += "{";
 
-			jsonString += "\"label\":\"" + points[i]->label() + "\", ";
+//			jsonString += "\"label\":\"" + points[i]->label() + "\", ";
 
 			jsonString += "\"lat\":\"" + to_string(points[i]->latitude()) + "\", ";
 			jsonString += "\"long\":\"" + to_string(points[i]->longitude()) + "\", ";

@@ -1,24 +1,47 @@
 function generateChart(elemId, jsonData){
-    chart = c3.generate({
-        bindTo: '${elemId}',
+    // console.log(jsonData);
+    var chart = c3.generate({
+        bindto: elemId,
         data: {
-            json: jsonData,
-            keys: {
-                x: 'datetime', // it's possible to specify 'x' when category axis
-                value: ['north', 'east', 'up'],
-            }
-        },
-        axis: {
-            x: {
-                type: 'categories',
-                tick: {
-                    fit: false,
-                    rotate: -45,
-                    multiline: false
-                },
-            }
+          columns: [
+            ['data1', 30, 200, 100, 400, 150, 250],
+            ['data2', 50, 20, 10, 40, 15, 25]
+          ]
         }
     });
+
+    // var chart = c3.generate({
+    //     bindTo: elemId,
+    //     data: {
+    //         json: {
+    //             data1: [30, 20, 50, 40, 60, 50],
+    //             data2: [200, 130, 90, 240, 130, 220],
+    //             data3: [300, 200, 160, 400, 250, 250]
+    //         }
+    //     }
+    // });
+    // var chart = c3.generate({
+    //     bindTo: elemId,
+    //     data: {
+    //         json: jsonData,
+    //         keys: {
+    //             // x: 'datetime', // it's possible to specify 'x' when category axis
+    //             value: ['north', 'east', 'up']
+    //         }
+    //     // },
+    // //     axis: {
+    // //         x: {
+    // //             type: 'category',
+    // //             tick: {
+    // //                 fit: false,
+    // //                 rotate: -45,
+    // //                 multiline: false
+    // //             },
+    // //         }
+    //     }
+    // });
+
+    console.log(chart);
 }
 
 
@@ -65,10 +88,11 @@ function updateMap(map){
 
 
     $.ajax({
-        type: "GET", 
+        type: "POST", 
         url: 'retrieve-stations.php',
-        timeout: 3000,
+        timeout: 5000,
         datatype: 'json',
+        async: "true",
         contentType: "application/json; charset=utf-8",
         cache: false,
         success: function(data) {
@@ -76,23 +100,22 @@ function updateMap(map){
 
             // Listando cada cliente encontrado na lista...
 
-            $.each(stations, function(i, station){
+            $.each(stations, function(key, station){
                 last_epoch = station[station.length - 1];
                 if(last_epoch.status === 1){
-                    L.marker([last_epoch.lat, last_epoch.long], {icon: suitableStIcon}).bindPopup(last_epoch.label).addTo(layer);
+                    L.marker([last_epoch.lat, last_epoch.long], {icon: suitableStIcon}).bindPopup(key).addTo(layer);
                 }
                 else{
-                    L.marker([last_epoch.lat, last_epoch.long], {icon: notSuitableStIcon}).bindPopup(last_epoch.label).addTo(layer);
+                    L.marker([last_epoch.lat, last_epoch.long], {icon: notSuitableStIcon}).bindPopup(key).addTo(layer);
                 }
             });
 
             if(stations[localStorage['stationLabel']] != undefined){
-                generateChart("neu-chart", stations[localStorage['stationLabel']]);
+                generateChart("#neu-chart", stations[localStorage['stationLabel']]);
             }
             else{
                 console.log("Data unavailable");
             }
-
 
             setTimeout(function(){
                 layer.remove();
