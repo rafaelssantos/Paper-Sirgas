@@ -14,8 +14,8 @@
    
 
 		
-        <script src="javascript/jquery/jquery-3.4.1.min.js"></script>
-        <script src="javascript/lib/leaflet.js"></script>
+        <script src="javascript/lib/jquery/jquery-3.4.1.min.js"></script>
+        <script src="javascript/lib/leaflet/leaflet.js"></script>
         <script src="javascript/lib/d3-5.11.0/d3.min.js" charset="utf-8"></script>
         <script src="javascript/lib/c3-0.7.8/c3.min.js"></script>
         <script src="javascript/monitor.js"></script>
@@ -35,7 +35,29 @@
                 <div id="stations-map"></div>
             </div>
             <div class='right'>
-   
+                <table>
+                    <tr>
+                        <th>Mark</th>
+                        <th>Last solution (time)</th>
+                        <th>Status</th>
+                        <th>Interval Integrity</th>
+                    </tr>
+                    <tr>
+                        <td>PPTE0</td>
+                    </tr>
+                    <tr>
+                        <td>ROSA0</td>
+                    </tr>
+                    <tr>
+                        <td>SPAR0</td>
+                    </tr>
+                    <tr>
+                        <td>SPDR0</td>
+                    </tr>
+                    <tr>
+                        <td>SPTU0</td>
+                    </tr>
+                </table>
             </div>
         </div>
         

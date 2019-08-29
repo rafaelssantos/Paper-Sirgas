@@ -5,10 +5,9 @@
 #include <thread>
 #include <vector>
 #include "settings.h"
-#include "inspector.h"
 #include "point.h"
 #include "pointmanager.h"
-
+#include "timedaemon.h"
 
 
 
@@ -50,12 +49,13 @@ int main(int argc, char* argv[]) {
 
 			while (filesCount <= Settings::instance().filesCount()) {
 				while (getline(ifs, line)) {
-					if (Inspector::instance().hasCoordinates(line, groundTruth->label())) {
+					if (PointManager::instance().hasCoordinates(line, groundTruth->label())) {
 						point = PointManager::instance().extract(line);
 						point->setLatitude(groundTruth->latitude());
 						point->setLongitude(groundTruth->longitude());
 
 						points.emplace_back(point);
+						TimeDaemon::intance().count(PointManager::instance().checkIntegrityNEU(*point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU()), *(point->dateTime()));
 					}
 				}
 				Settings::instance().grabFilePaths();

@@ -18,15 +18,17 @@ public:
 
 	Point* extract(std::string line) const;
 
-	double calcDeltaEpoch(const Point& point, const Point& groundTruth) const;
+	double calcDeltaEpochXYZ(const Point& point, const Point& groundTruth) const;
 
-	void updateRefEpoch(const Point& point, Point* groundTruth) const;
+	void updateRefEpochXYZ(const Point& point, Point* groundTruth) const;
 
 	bool checkIntegrityNEU(const Point& point, double thresholdNorth, double threasholdEast, double threasholdUp) const;
 
 	void exportSeriesToJsonFile(std::string dirPath, std::string label, const std::vector<Point*>& points, int count, double thresholdNorth, double threasholdEast, double threasholdUp) const;
 
 	void exportLastCheckToJsonFile(std::string dirPath, std::string label, const Point& point, double thresholdNorth, double threasholdEast, double threasholdUp) const;
+
+	bool hasCoordinates(std::string line, std::string label);
 
 
 private:

@@ -41,9 +41,9 @@ html, body {
 
 .split-container .left {
 	display: flex;
-	height: calc(100% - 0.5rem);
-	width: calc(50% - 0.5rem);
-	margin: 0.25rem;
+	height: calc(100% - 1rem);
+	width: calc(50% - 1rem);
+	margin: 0.5rem;
 }
 
 
@@ -51,11 +51,10 @@ html, body {
 
 
 .split-container .right {
-	background-color: yellow;
 	display: flex;
-	height: calc(100% - 0.5rem);
-	width: calc(50% - 0.5rem);
-	margin: 0.25rem;
+	height: calc(100% - 1rem);
+	width: calc(50% - 1rem);
+	margin: 0.5rem;
 }
 
 
@@ -63,9 +62,9 @@ html, body {
 
 
 .chart-container {
-	height: calc(50% - 0.5rem);
-	width: calc(100% - 0.5rem);
-	margin: 0.25rem;
+	height: calc(50% - 1rem);
+	width: calc(100% - 1rem);
+	margin: 0.5rem;
 	display: block;
 	float: left;
 }
@@ -86,4 +85,27 @@ html, body {
 	width: 100%;
 	height: calc(100% - 2rem);
 	display: block;
+}
+
+
+
+table {
+	width: 100%;
+	border-top: solid 2px black;
+	border-bottom: solid 2px black;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+table th{
+	font-weight: bold;
+	border-bottom: solid 1px black;
+	vertical-align: middle;
+	height: 2rem;
+}
+
+
+table td{
+	vertical-align: middle;
+	height: 2rem;
 }

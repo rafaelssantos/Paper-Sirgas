@@ -152,6 +152,10 @@ std::string Settings::groundTruthPaths(int index) const {
 
 
 string Settings::helpMenu() const {
+	string msg = "[-h] or [--help] <setting-file-path> = Print this text\n";
+	msg += "[-i] or [--input-settings] <setting-file-path> = Load file settings and run\n";
+
+	return msg;
 }
 
 

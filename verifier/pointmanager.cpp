@@ -7,7 +7,7 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
-
+#include "timedaemon.h"
 
 
 using namespace std;
@@ -104,7 +104,7 @@ Point* PointManager::extract(string line) const {
 
 
 
-double PointManager::calcDeltaEpoch(const Point& point, const Point& groundTruth) const {
+double PointManager::calcDeltaEpochXYZ(const Point& point, const Point& groundTruth) const {
 	long deltaSeconds = difftime(mktime(point.dateTime()->tm()), mktime(groundTruth.dateTime()->tm()));
 
 	return (deltaSeconds / 86400.0) / 365.0;
@@ -114,8 +114,8 @@ double PointManager::calcDeltaEpoch(const Point& point, const Point& groundTruth
 
 
 
-void PointManager::updateRefEpoch(const Point& point, Point* groundTruth) const {
-	double delta = calcDeltaEpoch(point, *groundTruth);
+void PointManager::updateRefEpochXYZ(const Point& point, Point* groundTruth) const {
+	double delta = calcDeltaEpochXYZ(point, *groundTruth);
 
 	groundTruth->setX(groundTruth->x() + delta * groundTruth->velocX());
 	groundTruth->setY(groundTruth->y() + delta * groundTruth->velocY());
@@ -205,12 +205,24 @@ void PointManager::exportLastCheckToJsonFile(string dirPath, string label, const
 		jsonString += "\"east\":\"" + to_string(point.east()) + "\", ";
 		jsonString += "\"up\":\"" + to_string(point.up()) + "\", ";
 
+		jsonString += "\"min30\":\"" + to_string(TimeDaemon::intance().percent30min()) + "\", ";
+		jsonString += "\"min60\":\"" + to_string(TimeDaemon::intance().percent60min()) + "\", ";
+		jsonString += "\"min120\":\"" + to_string(TimeDaemon::intance().percent120min()) + "\", ";
+		jsonString += "\"old\":\"" + to_string(TimeDaemon::intance().isOld()) + "\", ";
+
 		jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(point, thresholdNorth, threasholdEast, threasholdUp)) + "\"";
 		jsonString += "}";
 
 		ofs << jsonString;
 		ofs.close();
 	}
+}
+
+bool PointManager::hasCoordinates(string line, string label) {
+	if(line.find(label) != string::npos){
+		return true;
+	}
+	return false;
 }
 
 

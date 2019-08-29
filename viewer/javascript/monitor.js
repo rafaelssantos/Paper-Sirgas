@@ -59,18 +59,16 @@ function updateMap(){
     window.layer.addTo(window.map);
 
     var CustomIcon = L.Icon.extend({});
-    // var suitableStIcon = new CustomIcon({iconUrl: 'images/marker-suitable.png'});
-    // var notSuitableStIcon = new CustomIcon({iconUrl: 'images/marker-not-suitable.png'});
 
     var suitableStIcon= new L.icon({
-        iconUrl: 'images/marker-suitable.png',
+        iconUrl: 'javascript/lib/leaflet/markers/marker-icon-green.png',
         iconAnchor: [10, 41]
         // popupAnchor: [0, -41]
     });
 
 
     var notSuitableStIcon= new L.icon({
-        iconUrl: 'images/marker-not-suitable.png',
+        iconUrl: 'javascript/lib/leaflet/markers/marker-icon-red.png',
         iconAnchor: [10, 41]
         // popupAnchor: [0, -41]
     });
