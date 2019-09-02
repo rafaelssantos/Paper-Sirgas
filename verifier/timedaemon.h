@@ -27,7 +27,7 @@ private:
 
 	~TimeDaemon();
 
-	void updateReferences(bool ok, const DateTime& instance);
+	void updateReferences(const DateTime& instance);
 
 	int m_valuesIn120min;
 	int m_okValuesIn120min;

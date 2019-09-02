@@ -124,7 +124,7 @@ void Settings::extractThresholds(std::string threshold){
 
 
 int Settings::filesCount() const {
-	return m_groundTruthFilePaths.size();
+	return m_streamFilePaths.size();
 }
 
 
@@ -159,7 +159,7 @@ string Settings::helpMenu() const {
 }
 
 
-ErrorCode Settings::grabFilePaths() {
+void Settings::grabFilePaths() {
 	QDir streamDir(QString(m_streamDir.c_str()));
 	QStringList streamFileNames = streamDir.entryList(QStringList() << "*.ppp", QDir::Files);
 	m_streamFilePaths.clear();
@@ -179,13 +179,6 @@ ErrorCode Settings::grabFilePaths() {
 			m_groundTruthFilePaths.push_back(m_groundTruthDir + "/" + fileName.toStdString());
 		}
 	}
-
-
-	if(m_groundTruthFilePaths.size() != m_streamFilePaths.size()) {
-		return ErrorCode::ERR_APRIORI_X_STREAM;
-	}
-
-	return ErrorCode::SUCCESS;
 }
 
 

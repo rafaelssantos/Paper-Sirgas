@@ -28,6 +28,7 @@
 
     <body>
         <div class='header'>
+        <h1>Quality Real-time Monitoring of Unesp GNSS-SP</h1>
             <img class='logo' src="images/unesp.jpg">
         </div>
         <div class='split-container'>
@@ -38,24 +39,45 @@
                 <table>
                     <tr>
                         <th>Mark</th>
-                        <th>Last solution (time)</th>
-                        <th>Status</th>
-                        <th>Interval Integrity</th>
+                        <th>Last Epoch</th>
+                        <th>Last Status</th>
+                        <th>Quality in Interval (                
+                            <select id='cbTime'>
+                                <option value='30' selected> 30 min</option>
+                                <option value='60'>1 hour</option>
+                                <option value='120'>2 hours</option>
+                            </select> )
+                        </th>
                     </tr>
-                    <tr>
+                    <tr id="PPTE0-tr">
                         <td>PPTE0</td>
+                        <td id='PPTE0-last-solution'></td>
+                        <td id='PPTE0-status'></td>
+                        <td id='PPTE0-percent'></td>
                     </tr>
-                    <tr>
+                    <tr id="ROSA0-tr">
                         <td>ROSA0</td>
+                        <td id='ROSA0-last-solution'></td>
+                        <td id='ROSA0-status'></td>
+                        <td id='ROSA0-percent'></td>
                     </tr>
-                    <tr>
+                    <tr id="SPAR0-tr">
                         <td>SPAR0</td>
+                        <td id='SPAR0-last-solution'></td>
+                        <td id='SPAR0-status'></td>
+                        <td id='SPAR0-percent'></td>
                     </tr>
-                    <tr>
+                    <tr id="SPDR0-tr">
                         <td>SPDR0</td>
+                        <td id='SPDR0-last-solution'></td>
+                        <td id='SPDR0-status'></td>
+                        <td id='SPDR0-percent'></td>
                     </tr>
-                    <tr>
+                    <tr id="SPTU0-tr">
                         <td>SPTU0</td>
+                        <td id='SPTU0-last-solution'></td>
+                        <td id='SPTU0-status'></td>
+                        <td id='SPTU0-percent'></td>
                     </tr>
                 </table>
             </div>
@@ -64,7 +86,7 @@
         <div class='chart-container'>
             <div class='toolbar'>
                 <select id='cbStation'>
-                    <option value='PPTE0'>PPTE0</option>
+                    <option value='PPTE0' selected>PPTE0</option>
                     <option value='ROSA0'>ROSA0</option>
                     <option value='SPAR0'>SPAR0</option>
                     <option value='SPDR0'>SPDR0</option>

@@ -20,7 +20,7 @@ public:
 
 	std::string helpMenu() const;
 
-	ErrorCode grabFilePaths();
+	void grabFilePaths();
 
 	int filesCount() const;
 

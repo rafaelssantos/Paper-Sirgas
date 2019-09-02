@@ -16,8 +16,6 @@ TimeDaemon& TimeDaemon::intance() {
 double TimeDaemon::deltaMin(const DateTime& dateTime1, const DateTime& dateTime2) {
 	long deltaSeconds = difftime(mktime(dateTime1.tm()), mktime(dateTime2.tm()));
 
-	float t = deltaSeconds / 60.0;
-
 	return deltaSeconds / 60.0;
 }
 
@@ -36,7 +34,7 @@ bool TimeDaemon::isOld(){
 
 
 void TimeDaemon::count(bool ok, const DateTime& instance) {
-	updateReferences(ok, instance);
+	updateReferences(instance);
 
 	m_valuesIn30min++;
 	m_valuesIn60min++;
@@ -107,7 +105,7 @@ TimeDaemon::~TimeDaemon(){
 
 
 
-void TimeDaemon::updateReferences(bool ok, const DateTime& instance){
+void TimeDaemon::updateReferences(const DateTime& instance){
 	if(abs(deltaMin(instance, *m_last120min)) > 120){
 		m_last120min->setYear(instance.year());
 		m_last120min->setMonth(instance.month());
@@ -117,14 +115,12 @@ void TimeDaemon::updateReferences(bool ok, const DateTime& instance){
 		m_last120min->setMin(0);
 		m_last120min->setSec(0);
 
-		if(ok){
-			m_valuesIn120min = 0;
-			m_okValuesIn120min = 0;
-		}
-		else{
-			m_valuesIn120min = -1;
-			m_okValuesIn120min = -1;
-		}
+
+		m_valuesIn120min = 0;
+		m_okValuesIn120min = 0;
+		m_valuesIn120min = 0;
+		m_okValuesIn120min = 0;
+
 	}
 	if(abs(deltaMin(instance, *m_last60min)) > 60){
 		m_last60min->setYear(instance.year());
@@ -135,14 +131,10 @@ void TimeDaemon::updateReferences(bool ok, const DateTime& instance){
 		m_last60min->setMin(0);
 		m_last60min->setSec(0);
 
-		if(ok){
-			m_valuesIn60min = 0;
-			m_okValuesIn60min = 0;
-		}
-		else{
-			m_valuesIn60min = -1;
-			m_okValuesIn60min = -1;
-		}
+		m_valuesIn60min = 0;
+		m_okValuesIn60min = 0;
+		m_valuesIn60min = 0;
+		m_okValuesIn60min = 0;
 	}
 	if(abs(deltaMin(instance, *m_last30min)) > 30){
 		m_last30min->setYear(instance.year());
@@ -153,13 +145,9 @@ void TimeDaemon::updateReferences(bool ok, const DateTime& instance){
 		m_last30min->setMin(static_cast<int>(instance.min() / 30) * 30);
 		m_last30min->setSec(0);
 
-		if(ok){
-			m_valuesIn30min = 0;
-			m_okValuesIn30min = 0;
-		}
-		else{
-			m_valuesIn30min = -1;
-			m_okValuesIn30min = -1;
-		}
+		m_valuesIn30min = 0;
+		m_okValuesIn30min = 0;
+		m_valuesIn30min = 0;
+		m_okValuesIn30min = 0;
 	}
 }

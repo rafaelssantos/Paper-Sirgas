@@ -68,7 +68,7 @@ function updateMap(){
 
 
     var notSuitableStIcon= new L.icon({
-        iconUrl: 'javascript/lib/leaflet/markers/marker-icon-red.png',
+        iconUrl: 'javascript/lib/leaflet/markers/marker-icon-orange.png',
         iconAnchor: [10, 41]
         // popupAnchor: [0, -41]
     });
@@ -85,12 +85,37 @@ function updateMap(){
             var stations = JSON.parse(data);
 
             $.each(stations, function(key, station){
+      
+                $("#"+ key +"-last-solution").text(station.datetime);
                 if(station.status == 1){
+                    $("#"+ key +"-status").text("OK"); 
+
                     L.marker([station.lat, station.long], {icon: suitableStIcon}).bindPopup(key).addTo(window.layer);
                 }
                 else{
+                    $("#"+ key +"-status").text("WARNING"); 
+
                     L.marker([station.lat, station.long], {icon: notSuitableStIcon}).bindPopup(key).addTo(window.layer);
                 }
+
+                if(station.old == 1){
+                    $("#"+key + "-tr").addClass("old-data-row");
+                }
+
+                var percentage = 0;
+
+                if($("#cbTime").val() == 30){
+                    percentage = station.min30 * 100;    
+                }
+                else if($("cbTime").val() == 60){
+                    percentage = station.min60 * 100;
+
+                }
+                else{
+                    percentage = station.min120 * 100;
+                }
+                percentage = percentage.toFixed(2);
+                $("#" + key + "-percent").text(percentage+"%");
             });
         }
     });
@@ -123,6 +148,11 @@ $(document).ready(function(){
 
     $("#cbStation").change(function(){
         localStorage['stationLabel'] = $(this).children("option:selected").val();
+        clearTimeout(window.timer);
+        refresh();
+    });
+
+    $("#cbTime").change(function(){
         clearTimeout(window.timer);
         refresh();
     });
