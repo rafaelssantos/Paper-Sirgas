@@ -3,7 +3,7 @@
 #include <iostream>
 
 using namespace std;
-																																												
+
 
 
 TimeDaemon& TimeDaemon::intance() {
@@ -26,7 +26,7 @@ bool TimeDaemon::isOld(){
 
 	DateTime curTime(nowUtc->tm_year, nowUtc->tm_mon, nowUtc->tm_mday, nowUtc->tm_hour, nowUtc->tm_min, nowUtc->tm_sec);
 
-	if(abs(deltaMin(curTime, *m_last120min)) > 120){
+	if(abs(deltaMin(curTime, *m_last30min)) > 30){
 		return true;
 	}
 	return false;

@@ -9,27 +9,52 @@ function updateChart(){
         cache: false,
         success: function(data) {
             var stations = JSON.parse(data);
-
-            var chart = c3.generate({
-                bindto: "#neu-chart",
-                data: {
-                    json: stations[localStorage['stationLabel']],
-                    keys: {
-                        x: 'datetime', // it's possible to specify 'x' when category axis
-                        value: ['north', 'east', 'up']
-                    }
-                },
-                axis: {
-                    x: {
-                        type: 'category',
-                        tick: {
-                            fit: false,
-                            rotate: -45,
-                            multiline: false
+            
+            if(window.chart == undefined){
+                window.chart = c3.generate({
+                    bindto: "#neu-chart",
+                    data: {
+                        json: stations[localStorage['stationLabel']],
+                        keys: {
+                            x: 'datetime', // it's possible to specify 'x' when category axis
+                            value: ['north', 'east', 'up']
+                        }
+                    },
+                    axis: {
+                        x: {
+                            type: 'category',
+                            tick: {
+                                fit: false,
+                                rotate: -45,
+                                multiline: false
+                            }
                         }
                     }
-                }
-            });
+                 });
+            }
+            else {
+                window.chart.unload();
+                window.chart = c3.generate({
+                    bindto: "#neu-chart",
+                    data: {
+                        json: stations[localStorage['stationLabel']],
+                        keys: {
+                            x: 'datetime', // it's possible to specify 'x' when category axis
+                            value: ['north', 'east', 'up']
+                        }
+                    },
+                    axis: {
+                        x: {
+                            type: 'category',
+                            tick: {
+                                fit: false,
+                                rotate: -45,
+                                multiline: false
+                            }
+                        }
+                    }
+                 });
+            }
         }
     });
 }
@@ -54,6 +79,7 @@ function updateMap(){
 
         L.control.scale().addTo(window.map);
     }
+
 
     window.layer = L.layerGroup();
     window.layer.addTo(window.map);
@@ -111,8 +137,11 @@ function updateMap(){
                     percentage = station.min60 * 100;
 
                 }
-                else{
+                else if($("cbTime").val() == 120){
                     percentage = station.min120 * 100;
+                }
+                else{
+                    percentage = station.minAll * 100;
                 }
                 percentage = percentage.toFixed(2);
                 $("#" + key + "-percent").text(percentage+"%");

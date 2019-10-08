@@ -28,8 +28,7 @@
 
     <body>
         <div class='header'>
-        <h1>Quality Real-time Monitoring of Unesp GNSS-SP</h1>
-            <img class='logo' src="images/unesp.jpg">
+        <h1>Quality Real-time Monitoring of Unesp GNSS-SP<img class='logo' src="images/unesp.jpg"></h1>
         </div>
         <div class='split-container'>
             <div class='left'>
@@ -41,12 +40,13 @@
                         <th>Mark</th>
                         <th>Last Epoch</th>
                         <th>Last Status</th>
-                        <th>Quality in Interval (                
+                        <th>Quality in                 
                             <select id='cbTime'>
-                                <option value='30' selected> 30 min</option>
-                                <option value='60'>1 hour</option>
-                                <option value='120'>2 hours</option>
-                            </select> )
+                                <option value='30' selected> last 30 min</option>
+                                <option value='60'>last 1 hour</option>
+                                <option value='120'>last 2 hours</option>
+                                <option value='All'>all time</option>
+                            </select>
                         </th>
                     </tr>
                     <tr id="PPTE0-tr">
