@@ -208,6 +208,7 @@ void PointManager::exportLastCheckToJsonFile(string dirPath, string label, const
 		jsonString += "\"min30\":\"" + to_string(TimeDaemon::intance().percent30min()) + "\", ";
 		jsonString += "\"min60\":\"" + to_string(TimeDaemon::intance().percent60min()) + "\", ";
 		jsonString += "\"min120\":\"" + to_string(TimeDaemon::intance().percent120min()) + "\", ";
+		jsonString += "\"minAll\":\"" + to_string(TimeDaemon::intance().percentAllmin()) + "\", ";
 		jsonString += "\"old\":\"" + to_string(TimeDaemon::intance().isOld()) + "\", ";
 
 		jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(point, thresholdNorth, threasholdEast, threasholdUp)) + "\"";

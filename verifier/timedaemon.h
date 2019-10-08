@@ -19,6 +19,8 @@ public:
 
 	float percent120min();
 
+	float percentAllmin();
+
 	bool isOld();
 
 
@@ -29,6 +31,9 @@ private:
 
 	void updateReferences(const DateTime& instance);
 
+	int m_valuesInAllmin;
+	int m_okValuesInAllmin;
+
 	int m_valuesIn120min;
 	int m_okValuesIn120min;
 
@@ -38,6 +43,7 @@ private:
 	int m_valuesIn30min;
 	int m_okValuesIn30min;
 
+	DateTime* m_lastAllmin;
 	DateTime* m_last120min;
 	DateTime* m_last60min;
 	DateTime* m_last30min;
