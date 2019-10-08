@@ -22,7 +22,18 @@ html, body {
 	display: flexbox;
 	align-content: center;
 	vertical-align: middle;
-	height: 3rem;
+	height: 2rem;
+}
+
+.header h2 {
+	text-align: center;
+	font-weight: bold;
+	font-size: 100%;
+	padding-left: 2rem;
+	display: flexbox;
+	align-content: center;
+	vertical-align: middle;
+	height: 1rem;
 }
 
 

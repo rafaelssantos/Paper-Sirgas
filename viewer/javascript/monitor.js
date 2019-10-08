@@ -129,15 +129,17 @@ function updateMap(){
                 }
 
                 var percentage = 0;
+                // console.log ($("#cbTime").val());
 
-                if($("#cbTime").val() == 30){
-                    percentage = station.min30 * 100;    
+                var minutes = $("#cbTime").val();
+
+                if(minutes == 30){
+                    percentage = station.min30 * 100;
                 }
-                else if($("cbTime").val() == 60){
+                else if(minutes == 60){
                     percentage = station.min60 * 100;
-
                 }
-                else if($("cbTime").val() == 120){
+                else if(minutes == 120){
                     percentage = station.min120 * 100;
                 }
                 else{
