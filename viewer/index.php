@@ -38,7 +38,7 @@
             <div class='right'>
                 <table>
                     <tr>
-                        <th>Mark</th>
+                        <th>Ref Station</th>
                         <th>Last Epoch</th>
                         <th>Last Status</th>
                         <th>Quality in                 
