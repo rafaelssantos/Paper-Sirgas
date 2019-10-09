@@ -43,9 +43,9 @@
                         <th>Last Status</th>
                         <th>Quality in                 
                             <select id='cbTime'>
-                                <option value='30' selected> last 30 min</option>
-                                <option value='60'>last 1 hour</option>
-                                <option value='120'>last 2 hours</option>
+                                <option value='30' selected> 30 min</option>
+                                <option value='60'>1 hour</option>
+                                <option value='120'>2 hours</option>
                                 <option value='All'>all time</option>
                             </select>
                         </th>

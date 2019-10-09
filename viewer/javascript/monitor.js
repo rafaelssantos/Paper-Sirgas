@@ -127,6 +127,10 @@ function updateMap(){
                 if(station.old == 1){
                     $("#"+key + "-tr").addClass("old-data-row");
                 }
+                else{
+                    console.log
+                    $("#"+key + "-tr").removeClass("old-data-row");
+                }
 
                 var percentage = 0;
                 // console.log ($("#cbTime").val());

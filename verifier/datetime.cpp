@@ -1,5 +1,5 @@
 #include "datetime.h"
-
+#include <iostream>
 
 
 using namespace std;
@@ -19,17 +19,25 @@ DateTime::DateTime() {
 
 
 
-DateTime::DateTime(int year, int month, int day) : DateTime() {
-	m_tm->tm_year = year;
-	m_tm->tm_mon = month;
+DateTime::DateTime(int year, int month, int day) {
+	m_tm = new struct tm;
+	m_tm->tm_year = year - 1900;
+	m_tm->tm_mon = month - 1;
 	m_tm->tm_mday = day;
+	m_tm->tm_hour = 0;
+	m_tm->tm_min = 0;
+	m_tm->tm_sec = 0;
 }
 
 
 
 
 
-DateTime::DateTime(int year, int month, int day, int hour, int min, int sec) : DateTime(year, month, day) {
+DateTime::DateTime(int year, int month, int day, int hour, int min, int sec) {
+	m_tm = new struct tm;
+	m_tm->tm_year = year - 1900;
+	m_tm->tm_mon = month - 1;
+	m_tm->tm_mday = day;
 	m_tm->tm_hour = hour;
 	m_tm->tm_min = min;
 	m_tm->tm_sec = sec;
@@ -61,7 +69,7 @@ DateTime::~DateTime() {
 
 
 std::string DateTime::toString() const {
-	string month = to_string(m_tm->tm_mon);
+	string month = to_string(m_tm->tm_mon + 1);
 	string day = to_string(m_tm->tm_mday);
 	string hour = to_string(m_tm->tm_hour);
 	string min = to_string(m_tm->tm_min);
@@ -74,7 +82,7 @@ std::string DateTime::toString() const {
 	sec = string(2 - sec.length(), '0') + sec;
 
 	string output = "";
-	output += to_string(m_tm->tm_year) + "-" + month + "-" + day + " ";
+	output += to_string(m_tm->tm_year + 1900) + "-" + month + "-" + day + " ";
 	output += hour + ":" + min + ":" + sec;
 
 	return output;
@@ -96,14 +104,14 @@ string DateTime::timeToString() const {
 }
 
 string DateTime::dateToString() const {
-	string month = to_string(m_tm->tm_mon);
+	string month = to_string(m_tm->tm_mon + 1);
 	string day = to_string(m_tm->tm_mday);
 
 	month = string(2 - month.length(), '0') + month;
 	day = string(2 - day.length(), '0') + day;
 
 
-	string output = to_string(m_tm->tm_year) + "-" + month + "-" + day;
+	string output = to_string(m_tm->tm_year + 1900) + "-" + month + "-" + day;
 
 
 	return output;
@@ -114,25 +122,25 @@ string DateTime::dateToString() const {
 
 
 int DateTime::year() const {
-	return m_tm->tm_year;
+	return m_tm->tm_year + 1900;
 }
 
 void DateTime::setYear(int year) {
-	m_tm->tm_year = year;
+	m_tm->tm_year = year - 1900;
 }
 
 
 
 
 int DateTime::month() const {
-	return m_tm->tm_mon;
+	return m_tm->tm_mon + 1;
 }
 
 
 
 
 void DateTime::setMonth(int month) {
-	m_tm->tm_mon = month;
+	m_tm->tm_mon = month - 1;
 }
 
 
@@ -159,6 +167,7 @@ int DateTime::hour() const {
 
 void DateTime::setHour(int hour) {
 	m_tm->tm_hour = hour;
+	std::cout << m_tm->tm_hour << "\n";
 }
 
 int DateTime::min() const {

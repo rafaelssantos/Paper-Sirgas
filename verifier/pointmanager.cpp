@@ -146,7 +146,7 @@ bool PointManager::checkIntegrityNEU(const Point& point, double thresholdNorth, 
 
 
 
-void PointManager::exportSeriesToJsonFile(string dirPath, string label, const vector<Point*> &points, int count, double thresholdNorth, double threasholdEast, double threasholdUp) const {
+void PointManager::exportSeriesToJsonFile(string dirPath, string label, const vector<Point*> &points, int count) const {
 	ofstream ofs(dirPath + "/" + label + ".json");
 
 	string jsonString = "[\n";
@@ -156,22 +156,12 @@ void PointManager::exportSeriesToJsonFile(string dirPath, string label, const ve
 		for(auto i = max(static_cast<int>(points.size() - count), 0); i < points.size(); i++){
 			jsonString += "{";
 
-			//			jsonString += "\"label\":\"" + points[i]->label() + "\", ";
-
-			//			jsonString += "\"lat\":\"" + to_string(points[i]->latitude()) + "\", ";
-			//			jsonString += "\"long\":\"" + to_string(points[i]->longitude()) + "\", ";
 
 			jsonString += "\"datetime\":\"" + points[i]->dateTime()->dateToString() + " " + points[i]->dateTime()->timeToString() + "\", ";
 
 			jsonString += "\"north\":\"" + to_string(points[i]->north()) + "\", ";
 			jsonString += "\"east\":\"" + to_string(points[i]->east()) + "\", ";
 			jsonString += "\"up\":\"" + to_string(points[i]->up()) + "\"";
-
-			//			jsonString += "\"sigmaNorth\":\"" + to_string(points[i]->sigmaNorth()) + "\", ";
-			//			jsonString += "\"sigmaEast\":\"" + to_string(points[i]->sigmaEast()) + "\", ";
-			//			jsonString += "\"sigmaUp\":\"" + to_string(points[i]->sigmaUp()) + "\", ";
-
-			//			jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(*points[i], thresholdNorth, threasholdEast, threasholdUp)) + "\"";
 
 			n++;
 			if(n != points.size() && n != count){

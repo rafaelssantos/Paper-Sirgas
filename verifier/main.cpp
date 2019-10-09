@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 	Point* groundTruth = PointManager::instance().loadPoint(Settings::instance().groundTruthPaths(0));
 
 	cout << "Starting check for " << Settings::instance().label() << "\n";
-
+	int k = 0;
 	for(auto i = 0; i < Settings::instance().filesCount(); i++){
 		Point* point = nullptr;
 
@@ -50,8 +50,10 @@ int main(int argc, char* argv[]) {
 		if (ifs.is_open()) {
 			string line;
 
-			while (true) {
+			std::streampos gpos = ifs.tellg();
 
+
+			while (true) {
 				while (getline(ifs, line)) {
 					if (PointManager::instance().hasCoordinates(line, groundTruth->label())) {
 						point = PointManager::instance().extract(line);
@@ -59,37 +61,48 @@ int main(int argc, char* argv[]) {
 						point->setLongitude(groundTruth->longitude());
 
 
-						if(points.size() > 500){
-							size_t n = points.size() - 500;
-							for(auto i = 0; i < n; i++){
-								delete points[i];
-								points[i] = nullptr;
+						if(points.size() > 300){
+							size_t n = points.size() - 300;
+							for(auto j = 0u; j < n; j++){
+								delete points[j];
+								points[j] = nullptr;
 								points.erase(points.begin(), points.begin());
 							}
 						}
-
 						points.emplace_back(point);
+
 						TimeDaemon::intance().count(PointManager::instance().checkIntegrityNEU(*point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU()), *(point->dateTime()));
+					}
+					if(!ifs.eof()){
+						gpos = ifs.tellg();
 					}
 				}
 
 				Settings::instance().grabFilePaths();
 
-				if (ifs.eof() && i < Settings::instance().filesCount() - 1) {
-					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 300, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
+				if (i < Settings::instance().filesCount() - 1) {
+					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 300);
 					PointManager::instance().exportLastCheckToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), *point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
-					cout << "Reading next File ["<< Settings::instance().streamPaths(i+1) <<"]...\n";
+					cout << "[" <<  k << "] Processing file ["<< Settings::instance().streamPaths(i) << "]\n";
 					break;
 				}
-				else{
-					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 300, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
+				else if (!getline(ifs, line) || ifs.eof()){
+					ifs.close();
+					ifs.open(Settings::instance().streamPaths(i));
+					ifs.seekg(gpos);
+
+//					cout << "Gpos " << gpos << "\n";
+
+					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 300);
 					PointManager::instance().exportLastCheckToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), *point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
 					this_thread::sleep_for(chrono::seconds(5));
-					cout << "Trying lasf file ["<< Settings::instance().streamPaths(i) << "]...\n";
+					cout << "[" <<  k << "] Processing last file ["<< Settings::instance().streamPaths(i) << "]\n";
 				}
+				k++;
 			}
 			ifs.close();
 		}
+
 	}
 
 

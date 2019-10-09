@@ -20,6 +20,7 @@ Point::Point() {
 	m_latitude = m_longitude = 0;
 	m_north = m_east = m_up = 0;
 	m_sigmaNorth = m_sigmaEast = m_sigmaUp = 0;
+	m_datetime->tm()->tm_isdst = 0;
 }
 
 
@@ -75,6 +76,7 @@ Point::Point(const Point& point) {
 	m_sigmaEast = point.m_sigmaEast;
 	m_sigmaUp = point.m_sigmaUp;
 	*m_datetime = *(point.m_datetime);
+	m_datetime->tm()->tm_isdst = 0;
 }
 
 

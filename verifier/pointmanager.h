@@ -24,7 +24,7 @@ public:
 
 	bool checkIntegrityNEU(const Point& point, double thresholdNorth, double threasholdEast, double threasholdUp) const;
 
-	void exportSeriesToJsonFile(std::string dirPath, std::string label, const std::vector<Point*>& points, int count, double thresholdNorth, double threasholdEast, double threasholdUp) const;
+	void exportSeriesToJsonFile(std::string dirPath, std::string label, const std::vector<Point*>& points, int count) const;
 
 	void exportLastCheckToJsonFile(std::string dirPath, std::string label, const Point& point, double thresholdNorth, double threasholdEast, double threasholdUp) const;
 

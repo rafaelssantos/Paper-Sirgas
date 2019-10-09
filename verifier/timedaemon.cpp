@@ -20,20 +20,29 @@ double TimeDaemon::deltaMin(const DateTime& dateTime1, const DateTime& dateTime2
 }
 
 
-bool TimeDaemon::isOld(){
-	time_t now = time(0);
-	tm* nowUtc= gmtime(&now);
+void TimeDaemon::setOld(const DateTime& instance){
+	std::time_t now= std::time(0);
+	std::tm* nowUtc= std::gmtime(&now);
 
-	DateTime curTime(nowUtc->tm_year, nowUtc->tm_mon, nowUtc->tm_mday, nowUtc->tm_hour, nowUtc->tm_min, nowUtc->tm_sec);
+	DateTime nowDateTime(1900 + nowUtc->tm_year, nowUtc->tm_mon + 1, nowUtc->tm_mday, nowUtc->tm_hour, nowUtc->tm_min, nowUtc->tm_sec);
 
-	if(abs(deltaMin(curTime, *m_last30min)) > 30){
-		return true;
+	std::cout << deltaMin(nowDateTime, instance) << "\n";
+	std::cout << nowDateTime.toString() << "\n";
+	std::cout << instance.toString() << "\n";
+
+	if(deltaMin(nowDateTime, instance) > 5){
+		m_old = true;
 	}
-	return false;
+	else{
+		m_old = false;
+	}
 }
 
 
+
+
 void TimeDaemon::count(bool ok, const DateTime& instance) {
+
 	updateReferences(instance);
 
 	m_valuesIn30min++;
@@ -93,6 +102,10 @@ float TimeDaemon::percentAllmin() {
 	}
 }
 
+bool TimeDaemon::isOld() const {
+	return m_old;
+}
+
 
 
 
@@ -107,6 +120,7 @@ TimeDaemon::TimeDaemon() {
 	m_last120min = new DateTime();
 	m_last60min = new DateTime();
 	m_last30min = new DateTime();
+	m_last5min = new DateTime();
 }
 
 
@@ -123,6 +137,8 @@ TimeDaemon::~TimeDaemon(){
 
 
 void TimeDaemon::updateReferences(const DateTime& instance){
+	std::cout << "Aqui dentro 1: " << instance.toString() << "\n";
+
 	if(m_valuesInAllmin == 0){
 		m_lastAllmin->setYear(instance.year());
 		m_lastAllmin->setMonth(instance.month());
@@ -163,6 +179,7 @@ void TimeDaemon::updateReferences(const DateTime& instance){
 	}
 
 	if(abs(deltaMin(instance, *m_last30min)) > 30){
+
 		m_last30min->setYear(instance.year());
 		m_last30min->setMonth(instance.month());
 		m_last30min->setDay(instance.day());
@@ -174,4 +191,7 @@ void TimeDaemon::updateReferences(const DateTime& instance){
 		m_valuesIn30min = 0;
 		m_okValuesIn30min = 0;
 	}
+	std::cout << "Aqui dentro 2: " << instance.toString() << "\n";
+
+	setOld(instance);
 }

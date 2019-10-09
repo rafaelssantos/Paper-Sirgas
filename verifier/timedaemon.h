@@ -21,7 +21,7 @@ public:
 
 	float percentAllmin();
 
-	bool isOld();
+	bool isOld() const;
 
 
 private:
@@ -30,6 +30,9 @@ private:
 	~TimeDaemon();
 
 	void updateReferences(const DateTime& instance);
+
+	void setOld(const DateTime& instance);
+
 
 	int m_valuesInAllmin;
 	int m_okValuesInAllmin;
@@ -43,10 +46,14 @@ private:
 	int m_valuesIn30min;
 	int m_okValuesIn30min;
 
+	bool m_old;
+
 	DateTime* m_lastAllmin;
 	DateTime* m_last120min;
 	DateTime* m_last60min;
 	DateTime* m_last30min;
+	DateTime* m_last5min;
+
 };
 
 #endif // TIMEDAEMON_H
