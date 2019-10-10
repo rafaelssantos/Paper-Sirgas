@@ -167,7 +167,6 @@ int DateTime::hour() const {
 
 void DateTime::setHour(int hour) {
 	m_tm->tm_hour = hour;
-	std::cout << m_tm->tm_hour << "\n";
 }
 
 int DateTime::min() const {

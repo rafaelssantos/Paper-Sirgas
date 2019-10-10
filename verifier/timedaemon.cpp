@@ -26,10 +26,6 @@ void TimeDaemon::setOld(const DateTime& instance){
 
 	DateTime nowDateTime(1900 + nowUtc->tm_year, nowUtc->tm_mon + 1, nowUtc->tm_mday, nowUtc->tm_hour, nowUtc->tm_min, nowUtc->tm_sec);
 
-	std::cout << deltaMin(nowDateTime, instance) << "\n";
-	std::cout << nowDateTime.toString() << "\n";
-	std::cout << instance.toString() << "\n";
-
 	if(deltaMin(nowDateTime, instance) > 5){
 		m_old = true;
 	}
@@ -49,12 +45,14 @@ void TimeDaemon::count(bool ok, const DateTime& instance) {
 	m_valuesIn60min++;
 	m_valuesIn120min++;
 	m_valuesInAllmin++;
+	m_valuesDaily[instance.dateToString()] = m_valuesDaily[instance.dateToString()] + 1;
 
 	if(ok){
 		m_okValuesIn30min++;
 		m_okValuesIn60min++;
 		m_okValuesIn120min++;
 		m_okValuesInAllmin++;
+		m_okValuesDaily[instance.dateToString()] = m_okValuesDaily[instance.dateToString()] + 1;
 	}
 }
 
@@ -102,8 +100,69 @@ float TimeDaemon::percentAllmin() {
 	}
 }
 
+
+
+
+
+
 bool TimeDaemon::isOld() const {
 	return m_old;
+}
+
+
+
+
+std::vector<int> TimeDaemon::dailyOkValues() const {
+	vector<int> list;
+
+	for(auto d = m_okValuesDaily.begin(); d != m_okValuesDaily.end(); d++){
+		list.emplace_back(d->second);
+	}
+
+	return list;
+}
+
+
+
+
+
+std::vector<int> TimeDaemon::dailyValues() const {
+	vector<int> list;
+
+	for(auto d = m_valuesDaily.begin(); d != m_valuesDaily.end(); d++){
+		list.emplace_back(d->second);
+	}
+
+	return list;
+}
+
+
+
+
+
+std::vector<float> TimeDaemon::dailyPercent() const {
+	vector<int> values = dailyValues();
+	vector<int> okValues = dailyOkValues();
+	vector<float> percent;
+
+	for(auto i = 0u; i < values.size(); i++) {
+		percent.emplace_back(static_cast<float>(okValues[i]) / static_cast<float>(values[i]));
+	}
+
+	return percent;
+}
+
+
+
+
+std::vector<string> TimeDaemon::dailyLabels() const {
+	vector<string> list;
+
+	for(auto d = m_labelDaily.begin(); d != m_labelDaily.end(); d++){
+		list.emplace_back(d->first);
+	}
+
+	return list;
 }
 
 
@@ -137,8 +196,6 @@ TimeDaemon::~TimeDaemon(){
 
 
 void TimeDaemon::updateReferences(const DateTime& instance){
-	std::cout << "Aqui dentro 1: " << instance.toString() << "\n";
-
 	if(m_valuesInAllmin == 0){
 		m_lastAllmin->setYear(instance.year());
 		m_lastAllmin->setMonth(instance.month());
@@ -191,7 +248,10 @@ void TimeDaemon::updateReferences(const DateTime& instance){
 		m_valuesIn30min = 0;
 		m_okValuesIn30min = 0;
 	}
-	std::cout << "Aqui dentro 2: " << instance.toString() << "\n";
 
-	setOld(instance);
+	if (m_labelDaily.find(instance.dateToString()) == m_labelDaily.end() ) {
+		m_valuesDaily[instance.dateToString()] = 0;
+		m_okValuesDaily[instance.dateToString()] = 0;
+		m_labelDaily[instance.dateToString()] = new DateTime(instance.year(), instance.month(), instance.day());
+	}
 }

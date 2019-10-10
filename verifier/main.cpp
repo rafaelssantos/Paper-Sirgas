@@ -91,8 +91,12 @@ int main(int argc, char* argv[]) {
 					ifs.open(Settings::instance().streamPaths(i));
 					ifs.seekg(gpos);
 
-//					cout << "Gpos " << gpos << "\n";
+					TimeDaemon::intance().dailyLabels();
+					TimeDaemon::intance().dailyOkValues();
+					TimeDaemon::intance().dailyValues();
+					TimeDaemon::intance().dailyPercent();
 
+					PointManager::instance().exportDailyToCsv(Settings::instance().jsonDir(), Settings::instance().label(), TimeDaemon::intance().dailyLabels(), TimeDaemon::intance().dailyPercent(), TimeDaemon::intance().dailyOkValues(), TimeDaemon::intance().dailyValues());
 					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 300);
 					PointManager::instance().exportLastCheckToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), *point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
 					this_thread::sleep_for(chrono::seconds(5));

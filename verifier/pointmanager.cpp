@@ -209,6 +209,24 @@ void PointManager::exportLastCheckToJsonFile(string dirPath, string label, const
 	}
 }
 
+
+void PointManager::exportDailyToCsv(string dirPath, string label, const std::vector<string>& labels, const std::vector<float>& percent, const std::vector<int>& okValues, const std::vector<int>& values) {
+	ofstream ofs(dirPath + "/" + label + ".csv");
+
+	string output = "";
+	if(ofs.is_open()){
+		output += "day, percent, ok, all\n";
+		for(auto i = 0; i < labels.size(); i++){
+			output += labels[i] +  ", " + to_string(percent[i])  + ", " + to_string(okValues[i]) + ", " + to_string(values[i]) + "\n";
+		}
+		ofs << output;
+		ofs.close();
+	}
+}
+
+
+
+
 bool PointManager::hasCoordinates(string line, string label) {
 	if(line.find(label) != string::npos){
 		return true;

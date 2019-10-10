@@ -28,6 +28,8 @@ public:
 
 	void exportLastCheckToJsonFile(std::string dirPath, std::string label, const Point& point, double thresholdNorth, double threasholdEast, double threasholdUp) const;
 
+	void exportDailyToCsv(std::string dirPath, std::string label, const std::vector<std::string>& labels, const std::vector<float>& percent, const std::vector<int>& okValues, const std::vector<int>& values);
+
 	bool hasCoordinates(std::string line, std::string label);
 
 

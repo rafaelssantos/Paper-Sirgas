@@ -2,6 +2,9 @@
 #define TIMEDAEMON_H
 
 #include <ctime>
+#include <map>
+#include <vector>
+#include <string>
 #include "datetime.h"
 
 
@@ -23,11 +26,20 @@ public:
 
 	bool isOld() const;
 
+	std::vector<int> dailyOkValues() const;
+
+	std::vector<int> dailyValues() const;
+
+	std::vector<float> dailyPercent() const;
+
+	std::vector<std::string> dailyLabels() const;
+
+
 
 private:
 	TimeDaemon();
 
-	~TimeDaemon();
+	virtual ~TimeDaemon();
 
 	void updateReferences(const DateTime& instance);
 
@@ -53,6 +65,10 @@ private:
 	DateTime* m_last60min;
 	DateTime* m_last30min;
 	DateTime* m_last5min;
+
+	std::map<std::string, int> m_okValuesDaily;
+	std::map<std::string, int> m_valuesDaily;
+	std::map<std::string, DateTime*> m_labelDaily;
 
 };
 
