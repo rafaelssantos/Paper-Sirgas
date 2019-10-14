@@ -216,7 +216,7 @@ void PointManager::exportDailyToCsv(string dirPath, string label, const std::vec
 	string output = "";
 	if(ofs.is_open()){
 		output += "day, percent, ok, all\n";
-		for(auto i = 0; i < labels.size(); i++){
+		for(auto i = 0u; i < labels.size(); i++){
 			output += labels[i] +  ", " + to_string(percent[i])  + ", " + to_string(okValues[i]) + ", " + to_string(values[i]) + "\n";
 		}
 		ofs << output;
