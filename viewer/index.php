@@ -24,11 +24,9 @@
     
 
 
-
-
     <body>
         <div class='header'>
-        <h1>PPP-RQtM<img class='logo' src="images/unesp.jpg"></h1>
+        <h1>PPP-RtQM<img class='logo' src="images/unesp.jpg"></h1>
         <h2>PPP-based Real-time Quality Monitoring of GNSS-SP reference stations</h2>
         </div>
         <div class='split-container'>

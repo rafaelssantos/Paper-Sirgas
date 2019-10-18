@@ -34,26 +34,14 @@ function updateChart(){
             }
             else {
                 window.chart.unload();
-                window.chart = c3.generate({
-                    bindto: "#neu-chart",
-                    data: {
-                        json: stations[localStorage['stationLabel']],
-                        keys: {
-                            x: 'datetime', // it's possible to specify 'x' when category axis
-                            value: ['north', 'east', 'up']
-                        }
-                    },
-                    axis: {
-                        x: {
-                            type: 'category',
-                            tick: {
-                                fit: false,
-                                rotate: -45,
-                                multiline: false
-                            }
-                        }
-                    }
-                 });
+                window.chart.flush();
+                window.chart.load({
+                    json: stations[localStorage['stationLabel']],
+                    keys: {
+                                    x: 'datetime', // it's possible to specify 'x' when category axis
+                                    value: ['north', 'east', 'up']
+                                }
+                });
             }
         }
     });
@@ -183,6 +171,10 @@ $(document).ready(function(){
 
     $("#cbStation").change(function(){
         localStorage['stationLabel'] = $(this).children("option:selected").val();
+        window.chart.unload();
+        window.chart.flush();
+        window.chart.destroy();
+        window.chart = null;
         clearTimeout(window.timer);
         refresh();
     });
