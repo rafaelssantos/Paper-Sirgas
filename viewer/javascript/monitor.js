@@ -87,14 +87,13 @@ function updateChart(){
                     },
                     xAxis: [{
                         categories: datetime,
-                        // crosshair: true,
                         tickInterval: 20
                     }],
                     yAxis: [{
                         labels: {
                             format: '{value} m',
                             style: {
-                                color: Highcharts.getOptions().colors[0]
+                                color: Highcharts.getOptions().colors[1]
                             }
                         },
                         title: {
@@ -141,20 +140,6 @@ function updateChart(){
                 window.chart.series[0].setData(north);
                 window.chart.series[1].setData(east);
                 window.chart.series[2].setData(up);
-
-                // window.chart.series[1].update({
-                //     pointStart: east.pointStart,
-                //     data: east
-                // }, false);
-                // window.chart.series[2].update({
-                //     pointStart: up.pointStart,
-                //     data: up
-                // }, true);
-
-                // window.chart.series[1].update({east}, true);
-                // window.chart.series[2].update({up}, true);
-                // window.chart.xAxis[0].update({datetime},false);
-                // window.chart.redraw();
             }
         }
     });
