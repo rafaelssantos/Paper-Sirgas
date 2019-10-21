@@ -15,9 +15,15 @@
 
 		
         <script src="javascript/lib/jquery/jquery-3.4.1.min.js"></script>
+        
         <script src="javascript/lib/leaflet/leaflet.js"></script>
+        
         <script src="javascript/lib/d3-5.11.0/d3.min.js" charset="utf-8"></script>
         <script src="javascript/lib/c3-0.7.8/c3.min.js"></script>
+
+        <script src="javascript/lib/highchart-7.2.0/highcharts.js"></script>
+        <script src="javascript/lib/highchart-7.2.0/highcharts-more.js"></script>
+        <script src="javascript/lib/highchart-7.2.0/modules/exporting.js"></script>
         <script src="javascript/monitor.js"></script>
 
     </head>

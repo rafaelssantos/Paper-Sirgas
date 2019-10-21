@@ -1,3 +1,67 @@
+// function updateChart(){
+//     $.ajax({
+//         type: "POST", 
+//         url: 'serv-retrive-neu-series.php',
+//         async: 'false',
+//         datatype: 'json',
+//         contentType: "application/json; charset=utf-8",
+//         cache: false,
+//         success: function(data) {
+//             var epochs = JSON.parse(data);
+            
+//             if(window.chart == undefined){
+//                 window.chart = c3.generate({
+//                     bindto: "#neu-chart",
+//                     data: {
+//                         json: epochs[localStorage['stationLabel']],
+//                         xFormat: '%Y-%m-%d %H:%M:%S', // 'xFormat' can be used as custom format of 'x'
+//                         keys: {
+//                             x: 'datetime', // it's possible to specify 'x' when category axis
+//                             value: ['north', 'east', 'up']
+//                         }
+//                     },
+//                     axis: {
+//                         x: {
+//                             // type: 'category',
+//                             type: 'timeseries',
+//                             tick: {
+//                                 format: '%Y-%m-%d %H:%M:%S',
+//                                 fit: false,
+//                                 rotate: -45,
+//                                 multiline: false
+//                             }
+//                         }
+//                     }
+//                  });
+//             }
+//             else {
+//                 window.chart.unload();
+//                 window.chart.flush();
+//                 window.chart.load({
+//                     json: epochs[localStorage['stationLabel']],
+//                     keys: {
+//                         x: 'datetime', // it's possible to specify 'x' when category axis
+//                         value: ['north', 'east', 'up']
+//                     },
+//                     axis: {
+//                         x: {
+//                             // type: 'category',
+//                             type: 'timeseries',
+//                             tick: {
+//                                 format: '%Y-%m-%d H:%M:%S',
+//                                 fit: false,
+//                                 rotate: -45,
+//                                 multiline: false
+//                             }
+//                         }
+//                     }
+//                 });
+//             }
+//         }
+//     });
+// }
+
+
 function updateChart(){
     $.ajax({
         type: "POST", 
@@ -7,60 +71,53 @@ function updateChart(){
         contentType: "application/json; charset=utf-8",
         cache: false,
         success: function(data) {
-            var stations = JSON.parse(data);
-            
-            if(window.chart == undefined){
-                window.chart = c3.generate({
-                    bindto: "#neu-chart",
-                    data: {
-                        json: stations[localStorage['stationLabel']],
-                        xFormat: '%Y-%m-%d %H:%M:%S', // 'xFormat' can be used as custom format of 'x'
-                        keys: {
-                            x: 'datetime', // it's possible to specify 'x' when category axis
-                            value: ['north', 'east', 'up']
+            var epochs = JSON.parse(data);
+            var north= epochs[localStorage['stationLabel']].map(epoch => epoch.north).map(Number);
+            console.log(north);
+
+            Highcharts.chart('neu-chart', {
+                chart: {
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: 'Local tangent plane coordinates'
+                },
+                // xAxis: [{
+                //     categories: epochs[localStorage['stationLabel']].map(epoch => epoch.datetime),
+                //     crosshair: true,
+                //     tickInterval: 20
+                // }],
+                yAxis: [{ // Primary yAxis
+                    labels: {
+                        format: '{value} m',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
                         }
                     },
-                    axis: {
-                        x: {
-                            // type: 'category',
-                            type: 'timeseries',
-                            tick: {
-                                format: '%Y-%m-%d %H:%M:%S',
-                                fit: false,
-                                rotate: -45,
-                                multiline: false
-                            }
+                    title: {
+                        text: 'Meter',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
                         }
                     }
-                 });
-            }
-            else {
-                window.chart.unload();
-                window.chart.flush();
-                window.chart.load({
-                    json: stations[localStorage['stationLabel']],
-                    keys: {
-                        x: 'datetime', // it's possible to specify 'x' when category axis
-                        value: ['north', 'east', 'up']
-                    },
-                    axis: {
-                        x: {
-                            // type: 'category',
-                            type: 'timeseries',
-                            tick: {
-                                format: '%Y-%m-%d H:%M:%S',
-                                fit: false,
-                                rotate: -45,
-                                multiline: false
-                            }
-                        }
+                }],
+
+                tooltip: {
+                    shared: true
+                },
+
+                series: [{
+                    name: 'North',
+                    type: 'line',
+                    data: north,
+                    tooltip: {
+                        pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f}°C</b> '
                     }
-                });
-            }
+                }]
+            });
         }
     });
 }
-
 
 
 
@@ -110,10 +167,10 @@ function updateMap(){
         contentType: "application/json; charset=utf-8",
         cache: false,
         success: function(data) {
-            var stations = JSON.parse(data);
+            var epochs = JSON.parse(data);
 
-            $.each(stations, function(key, station){
-      
+            $.each(epochs, function(key, station){
+        
                 $("#"+ key +"-last-solution").text(station.datetime);
                 if(station.status == 1){
                     $("#"+ key +"-status").text("OK"); 
