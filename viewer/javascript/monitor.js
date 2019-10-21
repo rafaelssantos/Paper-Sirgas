@@ -1,5 +1,4 @@
 function updateChart(){
-
     $.ajax({
         type: "POST", 
         url: 'serv-retrive-neu-series.php',
@@ -15,6 +14,7 @@ function updateChart(){
                     bindto: "#neu-chart",
                     data: {
                         json: stations[localStorage['stationLabel']],
+                        xFormat: '%Y-%m-%d %H:%M:%S', // 'xFormat' can be used as custom format of 'x'
                         keys: {
                             x: 'datetime', // it's possible to specify 'x' when category axis
                             value: ['north', 'east', 'up']
@@ -22,8 +22,10 @@ function updateChart(){
                     },
                     axis: {
                         x: {
-                            type: 'category',
+                            // type: 'category',
+                            type: 'timeseries',
                             tick: {
+                                format: '%Y-%m-%d %H:%M:%S',
                                 fit: false,
                                 rotate: -45,
                                 multiline: false
@@ -38,9 +40,21 @@ function updateChart(){
                 window.chart.load({
                     json: stations[localStorage['stationLabel']],
                     keys: {
-                                    x: 'datetime', // it's possible to specify 'x' when category axis
-                                    value: ['north', 'east', 'up']
-                                }
+                        x: 'datetime', // it's possible to specify 'x' when category axis
+                        value: ['north', 'east', 'up']
+                    },
+                    axis: {
+                        x: {
+                            // type: 'category',
+                            type: 'timeseries',
+                            tick: {
+                                format: '%Y-%m-%d H:%M:%S',
+                                fit: false,
+                                rotate: -45,
+                                multiline: false
+                            }
+                        }
+                    }
                 });
             }
         }
@@ -162,6 +176,8 @@ function refresh(){
 
 
 
+
+
 $(document).ready(function(){
     if(localStorage['stationLabel'] == undefined){
         localStorage['stationLabel'] = "PPTE0";
@@ -180,8 +196,8 @@ $(document).ready(function(){
     });
 
     $("#cbTime").change(function(){
-        clearTimeout(window.timer);
-        refresh();
+        // clearTimeout(window.timer);
+        updateMap();
     });
 
     refresh();
