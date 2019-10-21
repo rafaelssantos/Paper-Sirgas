@@ -72,49 +72,90 @@ function updateChart(){
         cache: false,
         success: function(data) {
             var epochs = JSON.parse(data);
-            var north= epochs[localStorage['stationLabel']].map(epoch => epoch.north).map(Number);
-            console.log(north);
+            var north = epochs[localStorage['stationLabel']].map(epoch => epoch.north).map(Number);
+            var east = epochs[localStorage['stationLabel']].map(epoch => epoch.east).map(Number);
+            var up = epochs[localStorage['stationLabel']].map(epoch => epoch.up).map(Number);
+            var datetime = epochs[localStorage['stationLabel']].map(epoch => epoch.datetime);
 
-            Highcharts.chart('neu-chart', {
-                chart: {
-                    zoomType: 'xy'
-                },
-                title: {
-                    text: 'Local tangent plane coordinates'
-                },
-                // xAxis: [{
-                //     categories: epochs[localStorage['stationLabel']].map(epoch => epoch.datetime),
-                //     crosshair: true,
-                //     tickInterval: 20
-                // }],
-                yAxis: [{ // Primary yAxis
-                    labels: {
-                        format: '{value} m',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
-                        }
+            if(window.chart == undefined){
+                window.chart = Highcharts.chart('neu-chart', {
+                    chart: {
+                        zoomType: 'xy'
                     },
                     title: {
-                        text: 'Meter',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
+                        text: 'Local tangent plane coordinates'
+                    },
+                    xAxis: [{
+                        categories: datetime,
+                        // crosshair: true,
+                        tickInterval: 20
+                    }],
+                    yAxis: [{
+                        labels: {
+                            format: '{value} m',
+                            style: {
+                                color: Highcharts.getOptions().colors[0]
+                            }
+                        },
+                        title: {
+                            text: 'Meter',
+                            style: {
+                                color: Highcharts.getOptions().colors[1]
+                            }
                         }
-                    }
-                }],
+                    }],
 
-                tooltip: {
-                    shared: true
-                },
-
-                series: [{
-                    name: 'North',
-                    type: 'line',
-                    data: north,
                     tooltip: {
-                        pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f}°C</b> '
-                    }
-                }]
-            });
+                        shared: true
+                    },
+
+                    series: [{
+                        name: 'North',
+                        type: 'line',
+                        data: north,
+                        tooltip: {
+                            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.3f}m</b><br>'
+                        }
+                    },
+                    {
+                        name: 'East',
+                        type: 'line',
+                        data: east,
+                        tooltip: {
+                            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.3f}m</b><br>'
+                        }
+                    },
+                    {
+                        name: 'Up',
+                        type: 'line',
+                        data: up,
+                        tooltip: {
+                            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.3f}m</b><br>'
+                        }
+                    }]
+                });
+            }
+            else{
+                console.log("Here");
+                window.chart.xAxis[0].update({categories: datetime});
+                window.chart.series[0].setData(north);
+                window.chart.series[1].setData(east);
+                window.chart.series[2].setData(up);
+
+                // window.chart.series[1].update({
+                //     pointStart: east.pointStart,
+                //     data: east
+                // }, false);
+                // window.chart.series[2].update({
+                //     pointStart: up.pointStart,
+                //     data: up
+                // }, true);
+
+                // window.chart.series[1].update({east}, true);
+                // window.chart.series[2].update({up}, true);
+                // window.chart.xAxis[0].update({datetime},false);
+                // window.chart.redraw();
+            }
         }
     });
 }
@@ -244,8 +285,6 @@ $(document).ready(function(){
 
     $("#cbStation").change(function(){
         localStorage['stationLabel'] = $(this).children("option:selected").val();
-        window.chart.unload();
-        window.chart.flush();
         window.chart.destroy();
         window.chart = null;
         clearTimeout(window.timer);
