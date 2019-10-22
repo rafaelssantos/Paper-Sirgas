@@ -18,10 +18,6 @@ public:
 
 	Point* extract(std::string line) const;
 
-	double calcDeltaEpochXYZ(const Point& point, const Point& groundTruth) const;
-
-	void updateRefEpochXYZ(const Point& point, Point* groundTruth) const;
-
 	bool checkIntegrityNEU(const Point& point, double thresholdNorth, double threasholdEast, double threasholdUp) const;
 
 	void exportSeriesToJsonFile(std::string dirPath, std::string label, const std::vector<Point*>& points, int count) const;
@@ -40,9 +36,9 @@ private:
 
 	void extractDateTime(const QString& dateTime, Point* point) const;
 
-	void extractCoordinates(const QString& data, Point* point) const;
+	void extractXYZCoord(const QString& data, Point* point) const;
 
-	void extractNEU(const QString& data, Point* point) const;
+	void extractNEUCoord(const QString& data, Point* point) const;
 
 };
 

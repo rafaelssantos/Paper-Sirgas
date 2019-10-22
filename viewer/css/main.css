@@ -92,9 +92,10 @@ html, body {
 	float: left;
 }
 
-
-.chart-container .toolbar select {
+.chart-container .toolbar {
 	height: 2rem;
+	display: flex;
+	align-items: center;
 }
 
 

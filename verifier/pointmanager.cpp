@@ -95,40 +95,11 @@ Point* PointManager::extract(string line) const {
 	extractDateTime(tokens.at(0), point);
 	point->setLabel(tokens.at(1).toStdString());
 	tokens = data.split(QString(point->label().c_str()));
-	extractCoordinates(tokens.at(1), point);
-	extractNEU(tokens.at(1), point);
+	extractXYZCoord(tokens.at(1), point);
+	extractNEUCoord(tokens.at(1), point);
 
 	return point;
 }
-
-
-
-
-double PointManager::calcDeltaEpochXYZ(const Point& point, const Point& groundTruth) const {
-	long deltaSeconds = difftime(mktime(point.dateTime()->tm()), mktime(groundTruth.dateTime()->tm()));
-
-	return (deltaSeconds / 86400.0) / 365.0;
-}
-
-
-
-
-
-void PointManager::updateRefEpochXYZ(const Point& point, Point* groundTruth) const {
-	double delta = calcDeltaEpochXYZ(point, *groundTruth);
-
-	groundTruth->setX(groundTruth->x() + delta * groundTruth->velocX());
-	groundTruth->setY(groundTruth->y() + delta * groundTruth->velocY());
-	groundTruth->setZ(groundTruth->z() + delta * groundTruth->velocZ());
-
-	groundTruth->dateTime()->setDay(point.dateTime()->day());
-	groundTruth->dateTime()->setMonth(point.dateTime()->month());
-	groundTruth->dateTime()->setYear(point.dateTime()->year());
-	groundTruth->dateTime()->setHour(point.dateTime()->hour());
-	groundTruth->dateTime()->setMin(point.dateTime()->min());
-	groundTruth->dateTime()->setSec(point.dateTime()->sec());
-}
-
 
 
 
@@ -153,18 +124,23 @@ void PointManager::exportSeriesToJsonFile(string dirPath, string label, const ve
 	if(ofs.is_open()){
 		size_t n = 0;
 
-		for(auto i = max(static_cast<int>(points.size() - count), 0); i < points.size(); i++){
+		for(auto i = static_cast<unsigned>(max(static_cast<int>(points.size() - count), 0)); i < points.size(); i++){
 			jsonString += "{";
 
 
 			jsonString += "\"datetime\":\"" + points[i]->dateTime()->dateToString() + " " + points[i]->dateTime()->timeToString() + "\", ";
 
-			jsonString += "\"north\":\"" + to_string(points[i]->north()) + "\", ";
-			jsonString += "\"east\":\"" + to_string(points[i]->east()) + "\", ";
-			jsonString += "\"up\":\"" + to_string(points[i]->up()) + "\"";
+			jsonString += "\"north\":" + to_string(points[i]->north()) + ", ";
+			jsonString += "\"east\":" + to_string(points[i]->east()) + ", ";
+			jsonString += "\"up\":" + to_string(points[i]->up()) + ", ";
+
+			jsonString += "\"sigma-north\": [" + to_string(points[i]->north() - points[i]->sigmaNorth()) +", " + to_string(points[i]->north() + points[i]->sigmaNorth()) + "], ";
+			jsonString += "\"sigma-east\": [" + to_string(points[i]->east() - points[i]->sigmaEast()) +", " + to_string(points[i]->east() + points[i]->sigmaEast()) + "], ";
+			jsonString += "\"sigma-up\": [" + to_string(points[i]->up() - points[i]->sigmaUp()) +", " + to_string(points[i]->up() + points[i]->sigmaUp()) + "]";
+
 
 			n++;
-			if(n != points.size() && n != count){
+			if(n != points.size() && n != static_cast<size_t>(count)){
 				jsonString += "},\n";
 			}
 			else{
@@ -189,19 +165,19 @@ void PointManager::exportLastCheckToJsonFile(string dirPath, string label, const
 	string jsonString = "{\n";
 	if(ofs.is_open()){
 		jsonString += "\"datetime\":\"" + point.dateTime()->dateToString() + " " + point.dateTime()->timeToString() + "\", ";
-		jsonString += "\"lat\":\"" + to_string(point.latitude()) + "\", ";
-		jsonString += "\"long\":\"" + to_string(point.longitude()) + "\", ";
-		jsonString += "\"north\":\"" + to_string(point.north()) + "\", ";
-		jsonString += "\"east\":\"" + to_string(point.east()) + "\", ";
-		jsonString += "\"up\":\"" + to_string(point.up()) + "\", ";
+		jsonString += "\"lat\":" + to_string(point.latitude()) + ", ";
+		jsonString += "\"long\":" + to_string(point.longitude()) + ", ";
+		jsonString += "\"north\":" + to_string(point.north()) + ", ";
+		jsonString += "\"east\":" + to_string(point.east()) + ", ";
+		jsonString += "\"up\":" + to_string(point.up()) + ", ";
 
-		jsonString += "\"min30\":\"" + to_string(TimeDaemon::intance().percent30min()) + "\", ";
-		jsonString += "\"min60\":\"" + to_string(TimeDaemon::intance().percent60min()) + "\", ";
-		jsonString += "\"min120\":\"" + to_string(TimeDaemon::intance().percent120min()) + "\", ";
-		jsonString += "\"minAll\":\"" + to_string(TimeDaemon::intance().percentAllmin()) + "\", ";
-		jsonString += "\"old\":\"" + to_string(TimeDaemon::intance().isOld()) + "\", ";
+		jsonString += "\"min30\":" + to_string(TimeDaemon::intance().percent30min()) + ", ";
+		jsonString += "\"min60\":" + to_string(TimeDaemon::intance().percent60min()) + ", ";
+		jsonString += "\"min120\":" + to_string(TimeDaemon::intance().percent120min()) + ", ";
+		jsonString += "\"minAll\":" + to_string(TimeDaemon::intance().percentAllmin()) + ", ";
+		jsonString += "\"old\":" + to_string(TimeDaemon::intance().isOld()) + ", ";
 
-		jsonString += "\"status\":\"" + to_string(checkIntegrityNEU(point, thresholdNorth, threasholdEast, threasholdUp)) + "\"";
+		jsonString += "\"status\":" + to_string(checkIntegrityNEU(point, thresholdNorth, threasholdEast, threasholdUp)) + "";
 		jsonString += "}";
 
 		ofs << jsonString;
@@ -268,7 +244,7 @@ void PointManager::extractDateTime(const QString& dateTime, Point* point) const 
 
 
 
-void PointManager::extractCoordinates(const QString& data, Point* point) const {
+void PointManager::extractXYZCoord(const QString& data, Point* point) const {
 	QStringList tokens = data.split(" ");
 
 	for (int i = 0; i < tokens.length(); i++) {
@@ -293,7 +269,7 @@ void PointManager::extractCoordinates(const QString& data, Point* point) const {
 
 
 
-void PointManager::extractNEU(const QString& data, Point* point) const {
+void PointManager::extractNEUCoord(const QString& data, Point* point) const {
 	QStringList tokens = data.split(" ");
 	for (int i = 0; i < tokens.length(); i++) {
 		if (tokens.at(i).contains("dN", Qt::CaseInsensitive)) {

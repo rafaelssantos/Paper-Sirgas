@@ -97,6 +97,8 @@
                     <option value='SPDR0'>SPDR0</option>
                     <option value='SPTU0'>SPTU0</option>
                 </select>
+                <button type="button" id='btnSigma'>Show sigma</button>
+
             </div>
             <div id='neu-chart'>
 
