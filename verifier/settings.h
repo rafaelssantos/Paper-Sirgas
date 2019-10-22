@@ -22,7 +22,7 @@ public:
 
 	void grabFilePaths();
 
-	int filesCount() const;
+	int streamFilesCount() const;
 
 	std::string label() const;
 

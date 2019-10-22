@@ -1,4 +1,25 @@
+function neuChartSigmaVisibility(){
+    if($('#btnSigma').html() == "Hide sigma"){
+        if(window.chart.series[0].visible){
+            window.chart.series[1].show();
+        }
+        // if(window.chart.series[2].visible){
+        //     window.chart.series[3].show();
+        // }
+        // if(window.chart.series[4].visible){
+        //     window.chart.series[5].show();
+        // }
+    }
+    else{
+        window.chart.series[1].hide();
+        window.chart.series[3].hide();
+        window.chart.series[5].hide();
+    }
+}
+
+
 function updateChart(){
+
     $.ajax({
         type: "POST", 
         url: 'serv-retrive-neu-series.php',
@@ -7,60 +28,123 @@ function updateChart(){
         contentType: "application/json; charset=utf-8",
         cache: false,
         success: function(data) {
-            var stations = JSON.parse(data);
-            
+            var epochs = JSON.parse(data);
+
+            var datetime = epochs[localStorage['stationLabel']].map(epoch => epoch.datetime);
+
+            var north = epochs[localStorage['stationLabel']].map(epoch => epoch.north);
+            var east = epochs[localStorage['stationLabel']].map(epoch => epoch.east);
+            var up = epochs[localStorage['stationLabel']].map(epoch => epoch.up);
+
+            var sigmaNorth = epochs[localStorage['stationLabel']].map(epoch => epoch['sigma-north']);
+            var sigmaEast = epochs[localStorage['stationLabel']].map(epoch => epoch['sigma-east']);
+            var sigmaUp = epochs[localStorage['stationLabel']].map(epoch => epoch['sigma-up']);
+
+
             if(window.chart == undefined){
-                window.chart = c3.generate({
-                    bindto: "#neu-chart",
-                    data: {
-                        json: stations[localStorage['stationLabel']],
-                        xFormat: '%Y-%m-%d %H:%M:%S', // 'xFormat' can be used as custom format of 'x'
-                        keys: {
-                            x: 'datetime', // it's possible to specify 'x' when category axis
-                            value: ['north', 'east', 'up']
-                        }
+                window.chart = Highcharts.chart('neu-chart', {
+                    chart: {
+                        zoomType: 'xy'
                     },
-                    axis: {
-                        x: {
-                            // type: 'category',
-                            type: 'timeseries',
-                            tick: {
-                                format: '%Y-%m-%d %H:%M:%S',
-                                fit: false,
-                                rotate: -45,
-                                multiline: false
+                    title: {
+                        text: null
+                    },
+                    xAxis: [{
+                        categories: datetime,
+                        tickInterval: 10
+                    }],
+                    yAxis: [{
+                        labels: {
+                            format: '{value} m',
+                            style: {
+                                color: Highcharts.getOptions().colors[1]
+                            }
+                        },
+                        title: {
+                            text: 'Meter',
+                            style: {
+                                color: Highcharts.getOptions().colors[1]
                             }
                         }
-                    }
-                 });
-            }
-            else {
-                window.chart.unload();
-                window.chart.flush();
-                window.chart.load({
-                    json: stations[localStorage['stationLabel']],
-                    keys: {
-                        x: 'datetime', // it's possible to specify 'x' when category axis
-                        value: ['north', 'east', 'up']
+                    }],
+
+                    tooltip: {
+                        shared: true
                     },
-                    axis: {
-                        x: {
-                            // type: 'category',
-                            type: 'timeseries',
-                            tick: {
-                                format: '%Y-%m-%d H:%M:%S',
-                                fit: false,
-                                rotate: -45,
-                                multiline: false
+
+                    series: [{
+                        name: 'North',
+                        type: 'line',
+                        data: north,
+                        tooltip: {
+                            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.3f}m</b><br>'
+                        }
+                    },
+                    {
+                        name: 'North sigma',
+                        type: 'errorbar',
+                        visible: false,
+                        data: sigmaNorth,
+                        tooltip: {
+                            pointFormatter: function() { 
+                              return '(Sigma: ±' + ((this.low + this.high)/2).toFixed(3) +  'm<br/>'; 
                             }
                         }
-                    }
+                    },
+                    {
+                        name: 'East',
+                        type: 'line',
+                        data: east,
+                        tooltip: {
+                            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.3f}m</b><br>'
+                        }
+                    },
+                    {
+                        name: 'East sigma',
+                        type: 'errorbar',
+                        visible: false,
+                        data: sigmaEast,
+                        tooltip: {
+                            pointFormatter: function() { 
+                              return '(Sigma: ±' + ((this.low + this.high)/2).toFixed(3) +  'm<br/>'; 
+                            }
+                        }
+                    },
+                    {
+                        name: 'Up',
+                        type: 'line',
+                        data: up,
+                        tooltip: {
+                            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.3f}m</b><br>'
+                        }
+                    },
+                    {
+                        name: 'Up sigma',
+                        type: 'errorbar',
+                        visible: false,
+                        data: sigmaUp,
+                        tooltip: {
+                            pointFormatter: function() { 
+                              return '(Sigma: ±' + ((this.low + this.high)/2).toFixed(3) +  'm<br/>'; 
+                            }
+                        }
+                    }]
                 });
+                neuChartSigmaVisibility();
+            }
+            else{
+                window.chart.xAxis[0].update({categories: datetime});
+                window.chart.series[0].setData(north);
+                window.chart.series[1].setData(sigmaNorth);
+                window.chart.series[2].setData(east);
+                window.chart.series[3].setData(sigmaEast);
+                window.chart.series[4].setData(up);
+                window.chart.series[5].setData(sigmaUp);
+
             }
         }
     });
 }
-
 
 
 
@@ -91,14 +175,12 @@ function updateMap(){
     var suitableStIcon= new L.icon({
         iconUrl: 'javascript/lib/leaflet/markers/marker-icon-green.png',
         iconAnchor: [10, 41]
-        // popupAnchor: [0, -41]
     });
 
 
     var notSuitableStIcon= new L.icon({
         iconUrl: 'javascript/lib/leaflet/markers/marker-icon-orange.png',
         iconAnchor: [10, 41]
-        // popupAnchor: [0, -41]
     });
 
 
@@ -110,10 +192,10 @@ function updateMap(){
         contentType: "application/json; charset=utf-8",
         cache: false,
         success: function(data) {
-            var stations = JSON.parse(data);
+            var epochs = JSON.parse(data);
 
-            $.each(stations, function(key, station){
-      
+            $.each(epochs, function(key, station){
+        
                 $("#"+ key +"-last-solution").text(station.datetime);
                 if(station.status == 1){
                     $("#"+ key +"-status").text("OK"); 
@@ -159,6 +241,8 @@ function updateMap(){
 }
 
 
+
+
 function refresh(){
     updateMap();
     updateChart();
@@ -187,16 +271,24 @@ $(document).ready(function(){
 
     $("#cbStation").change(function(){
         localStorage['stationLabel'] = $(this).children("option:selected").val();
-        window.chart.unload();
-        window.chart.flush();
         window.chart.destroy();
         window.chart = null;
         clearTimeout(window.timer);
         refresh();
     });
 
+    $('#btnSigma').click(function(){
+        if($('#btnSigma').html() == "Show sigma"){
+            $('#btnSigma').html("Hide sigma");
+        }
+        else{
+            $('#btnSigma').html("Show sigma");
+        }
+        neuChartSigmaVisibility();
+
+    });
+
     $("#cbTime").change(function(){
-        // clearTimeout(window.timer);
         updateMap();
     });
 

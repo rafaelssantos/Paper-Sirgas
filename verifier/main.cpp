@@ -9,6 +9,7 @@
 #include "pointmanager.h"
 #include "timedaemon.h"
 
+#define MAX_INSTANCES_TO_JSON 100
 
 
 using namespace std;
@@ -42,7 +43,7 @@ int main(int argc, char* argv[]) {
 
 	cout << "Starting check for " << Settings::instance().label() << "\n";
 	int k = 0;
-	for(auto i = 0; i < Settings::instance().filesCount(); i++){
+	for(auto i = 0; i < Settings::instance().streamFilesCount(); i++){
 		Point* point = nullptr;
 
 		ifstream ifs(Settings::instance().streamPaths(i));
@@ -61,8 +62,8 @@ int main(int argc, char* argv[]) {
 						point->setLongitude(groundTruth->longitude());
 
 
-						if(points.size() > 300){
-							size_t n = points.size() - 300;
+						if(points.size() > MAX_INSTANCES_TO_JSON){
+							size_t n = points.size() - MAX_INSTANCES_TO_JSON;
 							for(auto j = 0u; j < n; j++){
 								delete points[j];
 								points[j] = nullptr;
@@ -73,23 +74,21 @@ int main(int argc, char* argv[]) {
 
 						TimeDaemon::intance().count(PointManager::instance().checkIntegrityNEU(*point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU()), *(point->dateTime()));
 					}
-					if(!ifs.eof()){
-						gpos = ifs.tellg();
-					}
+					gpos = ifs.tellg();
 				}
 
 				Settings::instance().grabFilePaths();
+				cout << "*ppp files for station: " << Settings::instance().streamFilesCount() << "\n";
 
-				if (i < Settings::instance().filesCount() - 1) {
-					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 300);
+				if (i < Settings::instance().streamFilesCount() - 1) {
+					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, MAX_INSTANCES_TO_JSON);
 					PointManager::instance().exportLastCheckToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), *point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
-					cout << "[" <<  k << "] Processing file ["<< Settings::instance().streamPaths(i) << "]\n";
+					cout << "Processing file ["<< Settings::instance().streamPaths(i) << "]\n";
 					break;
 				}
-				else if (!getline(ifs, line) || ifs.eof()){
-					ifs.close();
-					ifs.open(Settings::instance().streamPaths(i));
-					ifs.seekg(gpos);
+				else{
+					ifs.clear();
+					ifs.seekg(gpos, ios::beg);
 
 					TimeDaemon::intance().dailyLabels();
 					TimeDaemon::intance().dailyOkValues();
@@ -97,10 +96,10 @@ int main(int argc, char* argv[]) {
 					TimeDaemon::intance().dailyPercent();
 
 					PointManager::instance().exportDailyToCsv(Settings::instance().jsonDir(), Settings::instance().label(), TimeDaemon::intance().dailyLabels(), TimeDaemon::intance().dailyPercent(), TimeDaemon::intance().dailyOkValues(), TimeDaemon::intance().dailyValues());
-					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, 300);
+					PointManager::instance().exportSeriesToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), points, MAX_INSTANCES_TO_JSON);
 					PointManager::instance().exportLastCheckToJsonFile(Settings::instance().jsonDir(), groundTruth->label(), *point, Settings::instance().threasholdN(), Settings::instance().threasholdE(), Settings::instance().threasholdU());
 					this_thread::sleep_for(chrono::seconds(5));
-					cout << "[" <<  k << "] Processing last file ["<< Settings::instance().streamPaths(i) << "]\n";
+					cout << "[Pos: " << gpos  <<"] last file ["<< Settings::instance().streamPaths(i) << "]\n";
 				}
 				k++;
 			}

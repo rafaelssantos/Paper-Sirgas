@@ -123,7 +123,7 @@ void Settings::extractThresholds(std::string threshold){
 
 
 
-int Settings::filesCount() const {
+int Settings::streamFilesCount() const {
 	return m_streamFilePaths.size();
 }
 

@@ -254,4 +254,5 @@ void TimeDaemon::updateReferences(const DateTime& instance){
 		m_okValuesDaily[instance.dateToString()] = 0;
 		m_labelDaily[instance.dateToString()] = new DateTime(instance.year(), instance.month(), instance.day());
 	}
+	setOld(instance);
 }
